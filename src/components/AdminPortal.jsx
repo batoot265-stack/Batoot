@@ -66,12 +66,12 @@ export const AdminPortal = () => {
 
   // Settings form state
   const [settingsForm, setSettingsForm] = useState({
-    whatsappNumber: settings.whatsappNumber,
-    whatsappDisplay: settings.whatsappDisplay,
-    instagramUrl: settings.instagramUrl,
-    facebookUrl: settings.facebookUrl,
-    tiktokUrl: settings.tiktokUrl,
-    announcementText: settings.announcementText,
+    whatsappNumber: settings.whatsappNumber || '01093536058',
+    whatsappDisplay: settings.whatsappDisplay || '01093536058',
+    instagramUrl: settings.instagramUrl || 'https://www.instagram.com/your.fav.crochet.gurly?igsh=Z3c2Nmd0Z2k5azNx',
+    facebookUrl: settings.facebookUrl || 'https://www.facebook.com/share/1DYjDCmeen/?mibextid=wwXIfr',
+    tiktokUrl: settings.tiktokUrl || 'https://www.tiktok.com/@your.fav.crochet.gurly?_r=1&_t=ZS-99NMdUnCZWP',
+    announcementText: settings.announcementText || '🚚 FREE SHIPPING ON ALL ORDERS ✨ • 100% HANDMADE WITH LOVE 🪿 • FAST DIRECT WHATSAPP CHECKOUT 💬',
     newPin: ''
   });
 

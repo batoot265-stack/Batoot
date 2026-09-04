@@ -18,7 +18,7 @@ export const StoreProvider = ({ children }) => {
   // Settings state
   const [settings, setSettings] = useState(() => {
     try {
-      const saved = localStorage.getItem('batoot_settings_v2');
+      const saved = localStorage.getItem('batoot_settings_v3');
       if (saved) return JSON.parse(saved);
     } catch (e) {
       console.error("Failed to load settings", e);
@@ -88,7 +88,7 @@ export const StoreProvider = ({ children }) => {
 
   useEffect(() => {
     try {
-      localStorage.setItem('batoot_settings_v2', JSON.stringify(settings));
+      localStorage.setItem('batoot_settings_v3', JSON.stringify(settings));
     } catch (e) {
       console.error("Failed to save settings", e);
     }

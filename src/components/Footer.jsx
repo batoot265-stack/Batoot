@@ -1,6 +1,12 @@
 import React from 'react';
 import { useStore } from '../context/StoreContext';
-import { Heart, Phone, Instagram, Facebook, Shield, Truck, Sparkles } from 'lucide-react';
+import { Heart, Phone, Instagram, Facebook, Shield, Truck, Sparkles, ExternalLink } from 'lucide-react';
+
+const TikTokIcon = ({ className = "w-4 h-4" }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.88 2.89 2.89 0 0 1-2.88-2.88 2.89 2.89 0 0 1 2.88-2.88c.32 0 .62.06.9.16V9.42a6.34 6.34 0 0 0-.9-.07A6.33 6.33 0 0 0 3.16 15.68 6.33 6.33 0 0 0 9.49 22a6.33 6.33 0 0 0 6.33-6.32V8.71a8.28 8.28 0 0 0 4.84 1.57V6.83c-.36 0-.72-.05-1.07-.14z"/>
+  </svg>
+);
 
 export const Footer = ({ onNavigate }) => {
   const { settings, setIsCustomModalOpen, setIsAdminModalOpen, getWhatsAppDirectUrl } = useStore();
@@ -15,7 +21,7 @@ export const Footer = ({ onNavigate }) => {
   };
 
   return (
-    <footer className="bg-[#2B231A] text-yellow-50 pt-16 pb-12 border-t-4 border-yellow-400">
+    <footer className="bg-[#241C14] text-yellow-50 pt-16 pb-12 border-t-4 border-yellow-400">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Footer Grid */}
@@ -24,8 +30,8 @@ export const Footer = ({ onNavigate }) => {
           {/* Brand Info */}
           <div className="lg:col-span-5 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-300 to-amber-400 text-yellow-950 flex items-center justify-center font-bold text-2xl shadow-md border-2 border-yellow-200">
-                🪿
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-300 to-amber-400 text-yellow-950 flex items-center justify-center font-bold text-2xl shadow-md border-2 border-yellow-200 overflow-hidden">
+                <img src="/images/batoot-logo.png" alt="Batoot Logo" className="w-full h-full object-cover" />
               </div>
               <div>
                 <span className="text-2xl font-black tracking-tight text-white flex items-center gap-1.5">
@@ -38,38 +44,53 @@ export const Footer = ({ onNavigate }) => {
             </div>
 
             <p className="text-xs sm:text-sm text-yellow-100/70 leading-relaxed max-w-sm">
-              Crafting cozy handmade crochet plushies, trendy tote bags, everlasting florals, and customized gifts. Stitched with love, patience, and ultra-soft hypoallergenic yarn.
+              Handcrafted crochet companions, floral bouquets, and bespoke accessories. Woven stitch-by-stitch with ultra-soft hypoallergenic yarn.
             </p>
 
-            <div className="flex items-center gap-3 pt-2">
+            {/* Social Icons Bar */}
+            <div className="flex items-center gap-2.5 pt-2">
               <a
                 href={settings.instagramUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="w-9 h-9 rounded-xl bg-yellow-900/50 hover:bg-yellow-400 hover:text-yellow-950 text-yellow-300 flex items-center justify-center transition-all shadow-xs"
+                className="w-10 h-10 rounded-xl bg-yellow-900/60 hover:bg-[#E1306C] text-yellow-200 hover:text-white flex items-center justify-center transition-all shadow-xs"
+                title="Follow on Instagram (@your.fav.crochet.gurly)"
                 aria-label="Instagram"
               >
-                <Instagram className="w-4 h-4" />
+                <Instagram className="w-5 h-5" />
+              </a>
+
+              <a
+                href={settings.tiktokUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="w-10 h-10 rounded-xl bg-yellow-900/60 hover:bg-black text-yellow-200 hover:text-[#00f2fe] flex items-center justify-center transition-all shadow-xs"
+                title="Watch on TikTok (@your.fav.crochet.gurly)"
+                aria-label="TikTok"
+              >
+                <TikTokIcon className="w-5 h-5" />
               </a>
 
               <a
                 href={settings.facebookUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="w-9 h-9 rounded-xl bg-yellow-900/50 hover:bg-yellow-400 hover:text-yellow-950 text-yellow-300 flex items-center justify-center transition-all shadow-xs"
+                className="w-10 h-10 rounded-xl bg-yellow-900/60 hover:bg-[#1877F2] text-yellow-200 hover:text-white flex items-center justify-center transition-all shadow-xs"
+                title="Follow on Facebook"
                 aria-label="Facebook"
               >
-                <Facebook className="w-4 h-4" />
+                <Facebook className="w-5 h-5" />
               </a>
 
               <a
-                href={getWhatsAppDirectUrl()}
+                href={`https://wa.me/20${settings.whatsappNumber.replace(/^0+/, '')}`}
                 target="_blank"
                 rel="noreferrer"
-                className="w-9 h-9 rounded-xl bg-yellow-900/50 hover:bg-emerald-500 hover:text-white text-yellow-300 flex items-center justify-center transition-all shadow-xs"
+                className="w-10 h-10 rounded-xl bg-yellow-900/60 hover:bg-emerald-500 text-yellow-200 hover:text-white flex items-center justify-center transition-all shadow-xs"
+                title="Chat on WhatsApp (01093536058)"
                 aria-label="WhatsApp"
               >
-                <Phone className="w-4 h-4" />
+                <Phone className="w-5 h-5" />
               </a>
             </div>
           </div>
@@ -82,7 +103,7 @@ export const Footer = ({ onNavigate }) => {
             <ul className="space-y-2 text-xs font-medium text-yellow-100/80">
               <li>
                 <button onClick={() => handleNav('hero')} className="hover:text-yellow-300 transition-colors">
-                  🏠 Home
+                  🏠 Home & Hero
                 </button>
               </li>
               <li>
@@ -102,7 +123,7 @@ export const Footer = ({ onNavigate }) => {
               </li>
               <li>
                 <button onClick={() => handleNav('contact')} className="hover:text-yellow-300 transition-colors">
-                  💬 Contact & Support
+                  💬 Contact & WhatsApp
                 </button>
               </li>
             </ul>

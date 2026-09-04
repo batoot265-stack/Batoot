@@ -268,9 +268,11 @@ export const initialSettings = {
   whatsappDisplay: "01093536058",
   phone: "+20 109 353 6058",
   announcementText: "🚚 FREE SHIPPING ON ALL ORDERS ✨ • 100% HANDMADE WITH LOVE 🪿 • FAST DIRECT WHATSAPP CHECKOUT 💬",
-  instagramUrl: "https://instagram.com/batoot.crochet",
-  facebookUrl: "https://facebook.com/batootcrochet",
-  tiktokUrl: "https://tiktok.com/@batoot.crochet",
+  instagramUrl: "https://www.instagram.com/your.fav.crochet.gurly?igsh=Z3c2Nmd0Z2k5azNx",
+  instagramHandle: "@your.fav.crochet.gurly",
+  facebookUrl: "https://www.facebook.com/share/1DYjDCmeen/?mibextid=wwXIfr",
+  tiktokUrl: "https://www.tiktok.com/@your.fav.crochet.gurly?_r=1&_t=ZS-99NMdUnCZWP",
+  tiktokHandle: "@your.fav.crochet.gurly",
   adminPin: "1234",
   currency: "EGP"
 };
