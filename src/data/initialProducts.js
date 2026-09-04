@@ -136,9 +136,9 @@ export const initialProducts = [
     category: "Keychains & Minis",
     price: 120,
     originalPrice: 150,
-    image: "/images/products/crescent-moon.svg",
+    image: "/images/products/crescent-moon.jpg",
     gallery: [
-      "/images/products/crescent-moon.svg"
+      "/images/products/crescent-moon.jpg"
     ],
     badge: "Night Glow 🌙",
     inStock: true,
@@ -158,9 +158,9 @@ export const initialProducts = [
     category: "Amigurumi & Plushies",
     price: 145,
     originalPrice: 180,
-    image: "/images/products/mini-whale.svg",
+    image: "/images/products/mini-whale.jpg",
     gallery: [
-      "/images/products/mini-whale.svg"
+      "/images/products/mini-whale.jpg"
     ],
     badge: "Ocean Vibes 🌊",
     inStock: true,
@@ -180,9 +180,9 @@ export const initialProducts = [
     category: "Wearables & Accessories",
     price: 125,
     originalPrice: 150,
-    image: "/images/products/coquette-bow.svg",
+    image: "/images/products/coquette-bow.jpg",
     gallery: [
-      "/images/products/coquette-bow.svg"
+      "/images/products/coquette-bow.jpg"
     ],
     badge: "Just a Girl 🎀",
     inStock: true,
@@ -207,11 +207,11 @@ export const initialProducts = [
     category: "Keychains & Minis",
     price: 120,
     originalPrice: 150,
-    image: "/images/products/pepper-red.svg",
+    image: "/images/products/pepper-red.jpg",
     gallery: [
-      "/images/products/pepper-red.svg",
-      "/images/products/pepper-green.svg",
-      "/images/products/pepper-yellow.svg"
+      "/images/products/pepper-red.jpg",
+      "/images/products/pepper-green.jpg",
+      "/images/products/pepper-yellow.jpg"
     ],
     badge: "Spicy & Fun 🌶️",
     inStock: true,
@@ -229,9 +229,9 @@ export const initialProducts = [
       "Golden Yellow Pepper (فلفل أصفر) 🟡"
     ],
     colorImages: {
-      "Fiery Red Pepper (شطة حمراء) 🌶️": "/images/products/pepper-red.svg",
-      "Fresh Green Pepper (فلفل أخضر) 🫑": "/images/products/pepper-green.svg",
-      "Golden Yellow Pepper (فلفل أصفر) 🟡": "/images/products/pepper-yellow.svg"
+      "Fiery Red Pepper (شطة حمراء) 🌶️": "/images/products/pepper-red.jpg",
+      "Fresh Green Pepper (فلفل أخضر) 🫑": "/images/products/pepper-green.jpg",
+      "Golden Yellow Pepper (فلفل أصفر) 🟡": "/images/products/pepper-yellow.jpg"
     }
   },
   {
@@ -240,9 +240,9 @@ export const initialProducts = [
     category: "Floral & Home Decor",
     price: 130,
     originalPrice: 160,
-    image: "/images/products/spiderman-tapestry.svg",
+    image: "/images/products/spiderman-tapestry.jpg",
     gallery: [
-      "/images/products/spiderman-tapestry.svg"
+      "/images/products/spiderman-tapestry.jpg"
     ],
     badge: "Multipurpose 🕸️",
     inStock: true,
