@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
+  }
+}
+
+/* Custom cute styles & animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1.5deg);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float 4.5s ease-in-out 1.5s infinite;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FFFDF0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FDE047;
+  border-radius: 9999px;
+  border: 2px solid #FFFDF0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #EAB308;
+}
+
+/* Texture pattern */
+.bg-crochet-pattern {
+  background-color: #FFFDF6;
+  background-image: radial-gradient(#FDE047 0.75px, transparent 0.75px), radial-gradient(#FDE047 0.75px, #FFFDF6 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+  background-opacity: 0.15;
+}
+
+.yellow-gradient {
+  background: linear-gradient(135deg, #FEF08A 0%, #FDE047 50%, #FACC15 100%);
+}
+
+.yellow-glow {
+  box-shadow: 0 10px 25px -5px rgba(250, 204, 21, 0.35);
+}
