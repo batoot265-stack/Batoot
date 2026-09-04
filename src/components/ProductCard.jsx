@@ -35,7 +35,7 @@ export const ProductCard = ({ product }) => {
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
           onError={(e) => {
-            e.target.src = 'https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=600&q=80';
+            e.target.src = '/images/batoot-hero.jpg';
           }}
         />
 

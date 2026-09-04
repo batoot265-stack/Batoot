@@ -5,7 +5,7 @@ import { Sparkles, ArrowRight, Heart, ShieldCheck, Palette, Truck, Star } from '
 export const Hero = () => {
   const { setIsCustomModalOpen, setSelectedProduct, products, getWhatsAppDirectUrl } = useStore();
 
-  const signatureGoose = products.find(p => p.id === 'prod-1') || products[0];
+  const heroLily = products.find(p => p.id === 'prod-lily-flower') || products[0];
 
   const handleScrollToShop = () => {
     const el = document.getElementById('shop');
@@ -150,13 +150,13 @@ export const Hero = () => {
                   {/* Bottom Image Overlay Card */}
                   <div className="absolute bottom-3 inset-x-3 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-yellow-200 shadow-lg flex items-center justify-between">
                     <div>
-                      <h4 className="text-xs font-extrabold text-slate-900">Batoot Goose Plushie 🪿</h4>
-                      <p className="text-[11px] font-semibold text-yellow-700">320 EGP • Free Shipping</p>
+                      <h4 className="text-xs font-extrabold text-slate-900">A Lily Flower 🌺</h4>
+                      <p className="text-[11px] font-semibold text-yellow-700">490 EGP • Free Shipping</p>
                     </div>
-                    {signatureGoose && (
+                    {heroLily && (
                       <button
-                        onClick={() => setSelectedProduct(signatureGoose)}
-                        className="text-xs font-bold bg-yellow-400 hover:bg-yellow-500 text-yellow-950 px-3 py-1.5 rounded-xl transition-colors"
+                        onClick={() => setSelectedProduct(heroLily)}
+                        className="text-xs font-bold bg-yellow-400 hover:bg-yellow-500 text-yellow-950 px-3 py-1.5 rounded-xl transition-colors shadow-xs"
                       >
                         Quick View 👁️
                       </button>

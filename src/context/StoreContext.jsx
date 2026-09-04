@@ -4,10 +4,10 @@ import { initialProducts, initialSettings } from '../data/initialProducts';
 const StoreContext = createContext();
 
 export const StoreProvider = ({ children }) => {
-  // Products state (persisted in localStorage)
+  // Products state (persisted in localStorage with v2)
   const [products, setProducts] = useState(() => {
     try {
-      const saved = localStorage.getItem('batoot_products_v1');
+      const saved = localStorage.getItem('batoot_products_v2');
       if (saved) return JSON.parse(saved);
     } catch (e) {
       console.error("Failed to load products from storage", e);
@@ -18,7 +18,7 @@ export const StoreProvider = ({ children }) => {
   // Settings state
   const [settings, setSettings] = useState(() => {
     try {
-      const saved = localStorage.getItem('batoot_settings_v1');
+      const saved = localStorage.getItem('batoot_settings_v2');
       if (saved) return JSON.parse(saved);
     } catch (e) {
       console.error("Failed to load settings", e);
@@ -80,7 +80,7 @@ export const StoreProvider = ({ children }) => {
   // Sync to localStorage
   useEffect(() => {
     try {
-      localStorage.setItem('batoot_products_v1', JSON.stringify(products));
+      localStorage.setItem('batoot_products_v2', JSON.stringify(products));
     } catch (e) {
       console.error("Failed to save products", e);
     }
@@ -88,7 +88,7 @@ export const StoreProvider = ({ children }) => {
 
   useEffect(() => {
     try {
-      localStorage.setItem('batoot_settings_v1', JSON.stringify(settings));
+      localStorage.setItem('batoot_settings_v2', JSON.stringify(settings));
     } catch (e) {
       console.error("Failed to save settings", e);
     }

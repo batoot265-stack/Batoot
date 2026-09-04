@@ -19,8 +19,15 @@ export const ProductModal = () => {
 
   const currentColor = selectedColor || (selectedProduct.colors && selectedProduct.colors[0]) || 'Standard Handcrafted';
 
+  // Dynamic image switching if product provides colorImages
+  const currentImage = (selectedProduct.colorImages && selectedProduct.colorImages[currentColor]) 
+    || selectedProduct.image;
+
   const handleAddToCart = () => {
-    addToCart(selectedProduct, quantity, currentColor, customNote);
+    addToCart({
+      ...selectedProduct,
+      image: currentImage
+    }, quantity, currentColor, customNote);
     handleClose();
   };
 
@@ -61,9 +68,9 @@ export const ProductModal = () => {
             <div className="md:col-span-5 space-y-3">
               <div className="relative aspect-square rounded-2xl overflow-hidden bg-yellow-50 border-2 border-yellow-200">
                 <img
-                  src={selectedProduct.image}
+                  src={currentImage}
                   alt={selectedProduct.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-all duration-300"
                 />
                 {selectedProduct.badge && (
                   <span className="absolute top-3 left-3 bg-yellow-400 text-yellow-950 font-black text-xs px-3 py-1 rounded-full shadow-md">
@@ -71,6 +78,33 @@ export const ProductModal = () => {
                   </span>
                 )}
               </div>
+
+              {/* Gallery Thumbnails if available */}
+              {selectedProduct.gallery && selectedProduct.gallery.length > 1 && (
+                <div className="flex gap-2">
+                  {selectedProduct.gallery.map((img, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        // Find matching color if any
+                        if (selectedProduct.colorImages) {
+                          const matchingColor = Object.keys(selectedProduct.colorImages).find(
+                            k => selectedProduct.colorImages[k] === img
+                          );
+                          if (matchingColor) setSelectedColor(matchingColor);
+                        }
+                      }}
+                      className={`w-14 h-14 rounded-xl overflow-hidden border-2 transition-all ${
+                        currentImage === img
+                          ? 'border-yellow-500 ring-2 ring-yellow-300'
+                          : 'border-yellow-200 opacity-70 hover:opacity-100'
+                      }`}
+                    >
+                      <img src={img} alt="Thumbnail" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
 
               {/* Free Shipping Tag */}
               <div className="p-3 bg-yellow-50 rounded-xl border border-yellow-200 flex items-center gap-2 text-xs font-bold text-yellow-950">

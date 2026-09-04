@@ -178,14 +178,22 @@ export const AdminPortal = () => {
 
   // Image presets available in public images
   const imagePresets = [
-    { label: 'Batoot Goose 🪿', path: '/images/products/batoot-goose.jpg' },
-    { label: 'Daisy Tote Bag 🌼', path: '/images/products/daisy-tote.jpg' },
-    { label: 'Tulip Bouquet 🌷', path: '/images/products/tulip-bouquet.jpg' },
-    { label: 'Sunflower Hat 🌻', path: '/images/products/sunflower-bucket-hat.jpg' },
-    { label: 'Duck Keychains 🐥', path: '/images/products/duckling-keychains.jpg' },
-    { label: 'Strawberry Bag 🍓', path: '/images/products/strawberry-bag.jpg' },
-    { label: 'Honey Bunny 🐰', path: '/images/products/cozy-bunny.jpg' },
-    { label: 'Studio Hero 🪿', path: '/images/batoot-hero.jpg' }
+    { label: 'Lily Flower 🌺', path: '/images/products/lily-flower.jpg' },
+    { label: 'Tiny Hero 🕷️', path: '/images/products/spiderman-doll.jpg' },
+    { label: 'Lavender Coaster 🪻', path: '/images/products/lavender-coaster.jpg' },
+    { label: 'Yellow Duck 🦆', path: '/images/products/duck-bonnet-yellow.jpg' },
+    { label: 'White Duck 🦆', path: '/images/products/duck-bonnet-white.jpg' },
+    { label: 'Ducks Pair 🦆🦆', path: '/images/products/duck-bonnet-pair.jpg' },
+    { label: 'Yellow Star ⭐️', path: '/images/products/star-yellow.jpg' },
+    { label: 'Blue Star ⭐️', path: '/images/products/star-blue.jpg' },
+    { label: 'Crescent Moon 🌙', path: '/images/products/crescent-moon.svg' },
+    { label: 'Mini Whale 🐋', path: '/images/products/mini-whale.svg' },
+    { label: 'Coquette Bow 🎀', path: '/images/products/coquette-bow.svg' },
+    { label: 'Red Pepper 🌶️', path: '/images/products/pepper-red.svg' },
+    { label: 'Green Pepper 🫑', path: '/images/products/pepper-green.svg' },
+    { label: 'Yellow Pepper 🟡', path: '/images/products/pepper-yellow.svg' },
+    { label: 'Spider Tapestry 🕸️', path: '/images/products/spiderman-tapestry.svg' },
+    { label: 'Hero Studio 🌺', path: '/images/batoot-hero.jpg' }
   ];
 
   return (
