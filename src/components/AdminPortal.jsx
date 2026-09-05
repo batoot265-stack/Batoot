@@ -14,12 +14,16 @@ import {
   MessageSquare, 
   Settings, 
   LogOut, 
-  Phone, 
+  Phone,
   Image as ImageIcon,
   Layers,
   RotateCcw,
   Sparkles,
-  ExternalLink
+  ExternalLink,
+  Cloud,
+  CloudOff,
+  RefreshCw,
+  Database
 } from 'lucide-react';
 
 export const AdminPortal = () => {
@@ -41,10 +45,26 @@ export const AdminPortal = () => {
     deleteOrder,
     settings,
     updateSettings,
-    showToast
+    showToast,
+    isDbConnected,
+    isDbLoading,
+    dbStatus,
+    hydrateFromDb,
+    seedCatalog
   } = useStore();
 
   const [pinInput, setPinInput] = useState('');
+  const [isSeeding, setIsSeeding] = useState(false);
+
+  const handleSeedCatalog = async () => {
+    if (!window.confirm('Load the default catalog (10 products + settings) into the cloud database? Products with the same ids will be updated.')) return;
+    setIsSeeding(true);
+    try {
+      await seedCatalog();
+    } finally {
+      setIsSeeding(false);
+    }
+  };
   const [activeTab, setActiveTab] = useState('inventory'); // 'inventory' | 'add' | 'orders' | 'custom' | 'settings'
   const [editingProduct, setEditingProduct] = useState(null);
 
@@ -366,6 +386,92 @@ export const AdminPortal = () => {
                 <Settings className="w-4 h-4" />
                 <span>Store Settings</span>
               </button>
+            </div>
+
+            {/* Cloud database (D1) status bar */}
+            <div className="px-4 sm:px-6 pt-4">
+              <div className={`p-3 rounded-2xl border-2 text-xs space-y-2 ${
+                isDbLoading
+                  ? 'bg-slate-50 border-slate-200'
+                  : isDbConnected
+                    ? 'bg-emerald-50 border-emerald-200'
+                    : 'bg-rose-50 border-rose-200'
+              }`}>
+                {isDbLoading ? (
+                  <div className="flex items-center gap-2 font-bold text-slate-600">
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>Checking cloud database connection… (جاري فحص الاتصال بقاعدة البيانات…)</span>
+                  </div>
+                ) : isDbConnected ? (
+                  <>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="flex items-center gap-1.5 font-black text-emerald-900">
+                        <Cloud className="w-4 h-4" />
+                        <span>Cloud Database Connected ☁️ (متصل بقاعدة البيانات السحابية)</span>
+                      </span>
+                      {dbStatus.counts && (
+                        <span className="text-emerald-800 font-bold bg-white/70 px-2 py-0.5 rounded-lg border border-emerald-200">
+                          {dbStatus.counts.products ?? 0} products • {dbStatus.counts.orders ?? 0} orders • {dbStatus.counts.custom_requests ?? 0} custom requests
+                        </span>
+                      )}
+                      <span className="ml-auto flex items-center gap-2">
+                        <button
+                          onClick={hydrateFromDb}
+                          className="px-2.5 py-1.5 rounded-xl bg-white border border-emerald-300 text-emerald-900 font-bold hover:bg-emerald-100 flex items-center gap-1"
+                          title="Re-check connection and reload from cloud"
+                        >
+                          <RefreshCw className="w-3.5 h-3.5" />
+                          <span>Refresh</span>
+                        </button>
+                        <button
+                          onClick={handleSeedCatalog}
+                          disabled={isSeeding}
+                          className="px-2.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 disabled:opacity-60 text-white font-bold flex items-center gap-1"
+                          title="Load the 10 default products + settings into D1 (safe to re-run)"
+                        >
+                          <Database className="w-3.5 h-3.5" />
+                          <span>{isSeeding ? 'Loading…' : 'Load Default Catalog'}</span>
+                        </button>
+                      </span>
+                    </div>
+                    {dbStatus.hint && (
+                      <p className="text-emerald-900 bg-white/60 p-2 rounded-xl border border-emerald-200">
+                        💡 {dbStatus.hint}
+                      </p>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="flex items-center gap-1.5 font-black text-rose-900">
+                        <CloudOff className="w-4 h-4" />
+                        <span>Local Mode — Cloud Database NOT Connected 💾 (الداتابيز السحابية غير متصلة)</span>
+                      </span>
+                      <button
+                        onClick={hydrateFromDb}
+                        className="ml-auto px-2.5 py-1.5 rounded-xl bg-white border border-rose-300 text-rose-900 font-bold hover:bg-rose-100 flex items-center gap-1"
+                      >
+                        <RefreshCw className="w-3.5 h-3.5" />
+                        <span>Retry Connection</span>
+                      </button>
+                    </div>
+                    {dbStatus.error && (
+                      <p className="font-mono text-[11px] text-rose-900 bg-white/70 p-2 rounded-xl border border-rose-200 break-words">
+                        ⚠️ {dbStatus.error}
+                      </p>
+                    )}
+                    {dbStatus.hint && (
+                      <p className="text-rose-900 bg-white/60 p-2 rounded-xl border border-rose-200">
+                        💡 {dbStatus.hint}
+                      </p>
+                    )}
+                    <p className="text-slate-500">
+                      Changes you make now are saved on this device only. Fix the connection, then press “Retry Connection”.
+                      (التعديلات دلوقتي بتتحفظ على الجهاز ده بس لحد ما الاتصال يشتغل.)
+                    </p>
+                  </>
+                )}
+              </div>
             </div>
 
             {/* TAB 1: INVENTORY & STOCK MANAGEMENT */}

@@ -31,5 +31,8 @@ export const api = {
   getSettings:    ()  => req('/api/settings'),
   updateSettings: (s) => req('/api/settings', { method: 'PUT', body: JSON.stringify(s) }),
 
-  seed: () => req('/api/seed', { method: 'POST' })
+  seed: () => req('/api/seed', { method: 'POST' }),
+
+  // Diagnostics
+  health: () => req('/api/health')
 };

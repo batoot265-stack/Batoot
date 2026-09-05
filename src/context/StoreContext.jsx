@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { initialProducts, initialSettings } from '../data/initialProducts';
 import { api } from '../lib/api';
 
@@ -81,37 +81,86 @@ export const StoreProvider = ({ children }) => {
   // Cloudflare D1 connection state
   const [isDbConnected, setIsDbConnected] = useState(false);
   const [isDbLoading, setIsDbLoading] = useState(true);
+  // Detailed diagnostics from /api/health (shown in the Admin Portal so the
+  // owner can see exactly why the cloud database isn't working, if so).
+  const [dbStatus, setDbStatus] = useState({ checked: false, error: null, hint: null, counts: null });
 
-  // Hydrate from Cloudflare D1 on first load.
+  // Hydrate from Cloudflare D1.
   // If the API isn't reachable (e.g. plain `vite dev`), we silently keep
   // the localStorage/seed data so the site always renders.
-  useEffect(() => {
-    let cancelled = false;
+  const hydrateFromDb = useCallback(async () => {
+    setIsDbLoading(true);
+    try {
+      const [dbProducts, dbSettings, health] = await Promise.all([
+        api.listProducts(),
+        api.getSettings().catch(() => ({})),
+        api.health().catch((e) => ({ ok: false, error: e.message }))
+      ]);
 
-    (async () => {
-      try {
-        const [dbProducts, dbSettings] = await Promise.all([
-          api.listProducts(),
-          api.getSettings().catch(() => ({}))
-        ]);
-        if (cancelled) return;
-
-        if (Array.isArray(dbProducts) && dbProducts.length > 0) {
-          setProducts(dbProducts);
-        }
-        if (dbSettings && Object.keys(dbSettings).length > 0) {
-          setSettings(prev => ({ ...prev, ...dbSettings }));
-        }
-        setIsDbConnected(true);
-      } catch {
-        if (!cancelled) setIsDbConnected(false);
-      } finally {
-        if (!cancelled) setIsDbLoading(false);
+      if (Array.isArray(dbProducts) && dbProducts.length > 0) {
+        setProducts(dbProducts);
       }
-    })();
-
-    return () => { cancelled = true; };
+      if (dbSettings && Object.keys(dbSettings).length > 0) {
+        setSettings(prev => ({ ...prev, ...dbSettings }));
+      }
+      setIsDbConnected(true);
+      setDbStatus({
+        checked: true,
+        error: null,
+        hint: health && health.hint ? health.hint : null,
+        counts: health && health.counts ? health.counts : null
+      });
+      return true;
+    } catch (e) {
+      setIsDbConnected(false);
+      // Ask /api/health for the precise reason (missing binding? missing tables?)
+      let detail = { error: e.message };
+      try {
+        detail = await api.health();
+      } catch {
+        // /api/health itself failed (functions not deployed at all?)
+      }
+      setDbStatus({
+        checked: true,
+        error: (detail && detail.error) || e.message || 'Database unreachable.',
+        hint: (detail && detail.hint) || 'If you just deployed, make sure Pages Functions deployed and the D1 binding "DB" is attached, then redeploy.',
+        counts: (detail && detail.counts) || null
+      });
+      return false;
+    } finally {
+      setIsDbLoading(false);
+    }
   }, []);
+
+  // Hydrate once on first load.
+  useEffect(() => {
+    hydrateFromDb();
+  }, [hydrateFromDb]);
+
+  // Load the default catalog + settings into D1 (used once after connecting
+  // a fresh database), then reload everything from the cloud.
+  const seedCatalog = async () => {
+    try {
+      const res = await api.seed();
+      await hydrateFromDb();
+      try {
+        const [dbOrders, dbRequests] = await Promise.all([
+          api.listOrders(),
+          api.listCustomRequests()
+        ]);
+        if (Array.isArray(dbOrders)) setOrders(dbOrders);
+        if (Array.isArray(dbRequests)) setCustomRequests(dbRequests);
+      } catch {
+        // logs are optional; catalog is what matters
+      }
+      showToast(`Catalog loaded to the cloud database (${res.products} products)! ☁️✨`);
+      return true;
+    } catch (e) {
+      console.error('Seeding failed', e);
+      showToast('Seeding failed — is the cloud database connected? See the status above.', 'error');
+      return false;
+    }
+  };
 
   // Load admin logs from D1 once the admin signs in
   useEffect(() => {
@@ -459,6 +508,9 @@ export const StoreProvider = ({ children }) => {
         cartCount,
         isDbConnected,
         isDbLoading,
+        dbStatus,
+        hydrateFromDb,
+        seedCatalog,
         // Setters
         setIsCartOpen,
         setIsCustomModalOpen,

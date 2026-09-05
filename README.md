@@ -47,6 +47,11 @@ falls back to the bundled catalog and localStorage, so the site never breaks.
 | GET / POST | `/api/custom-requests` | List / record custom requests |
 | GET / PUT | `/api/settings` | Read / save store settings |
 | POST | `/api/seed` | Load the default catalog + settings |
+| GET | `/api/health` | Diagnose the D1 connection (binding, tables, counts) |
+
+> 🇪🇬 **بتواجه مشكلة في ربط الداتابيز؟** شوف الدليل العربي خطوة بخطوة:
+> [`DEPLOY_AR.md`](./DEPLOY_AR.md) — وافتح `/api/health` على موقعك عشان تعرف بالظبط إيه اللي ناقص.
+> The Admin Portal also shows a live ☁️/💾 database status bar with one-click catalog seeding.
 
 ---
 
