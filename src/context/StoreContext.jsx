@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { initialProducts, initialSettings } from '../data/initialProducts';
+import { api } from '../lib/api';
 
 const StoreContext = createContext();
 
@@ -76,6 +77,61 @@ export const StoreProvider = ({ children }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Items');
   const [toastMessage, setToastMessage] = useState(null);
+
+  // Cloudflare D1 connection state
+  const [isDbConnected, setIsDbConnected] = useState(false);
+  const [isDbLoading, setIsDbLoading] = useState(true);
+
+  // Hydrate from Cloudflare D1 on first load.
+  // If the API isn't reachable (e.g. plain `vite dev`), we silently keep
+  // the localStorage/seed data so the site always renders.
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const [dbProducts, dbSettings] = await Promise.all([
+          api.listProducts(),
+          api.getSettings().catch(() => ({}))
+        ]);
+        if (cancelled) return;
+
+        if (Array.isArray(dbProducts) && dbProducts.length > 0) {
+          setProducts(dbProducts);
+        }
+        if (dbSettings && Object.keys(dbSettings).length > 0) {
+          setSettings(prev => ({ ...prev, ...dbSettings }));
+        }
+        setIsDbConnected(true);
+      } catch {
+        if (!cancelled) setIsDbConnected(false);
+      } finally {
+        if (!cancelled) setIsDbLoading(false);
+      }
+    })();
+
+    return () => { cancelled = true; };
+  }, []);
+
+  // Load admin logs from D1 once the admin signs in
+  useEffect(() => {
+    if (!isDbConnected || !isAdminLoggedIn) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const [dbOrders, dbRequests] = await Promise.all([
+          api.listOrders(),
+          api.listCustomRequests()
+        ]);
+        if (cancelled) return;
+        if (Array.isArray(dbOrders)) setOrders(dbOrders);
+        if (Array.isArray(dbRequests)) setCustomRequests(dbRequests);
+      } catch (e) {
+        console.warn('Could not load admin logs from D1', e);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [isDbConnected, isAdminLoggedIn]);
 
   // Sync to localStorage
   useEffect(() => {
@@ -177,6 +233,17 @@ export const StoreProvider = ({ children }) => {
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   // Admin Product Operations
+  // Fire-and-forget D1 sync; warns the admin if the cloud write fails.
+  const syncToDb = (promiseFactory, label) => {
+    if (!isDbConnected) return;
+    Promise.resolve()
+      .then(promiseFactory)
+      .catch((e) => {
+        console.error(`D1 sync failed (${label})`, e);
+        showToast(`Saved locally, but syncing "${label}" to the cloud failed.`, 'error');
+      });
+  };
+
   const addProduct = (newProduct) => {
     const productWithId = {
       ...newProduct,
@@ -186,12 +253,14 @@ export const StoreProvider = ({ children }) => {
       inStock: newProduct.inStock !== false
     };
     setProducts(prev => [productWithId, ...prev]);
+    syncToDb(() => api.createProduct(productWithId), 'add product');
     showToast(`Product "${newProduct.name}" added successfully! ✨`);
     return productWithId;
   };
 
   const updateProduct = (id, updatedFields) => {
     setProducts(prev => prev.map(p => p.id === id ? { ...p, ...updatedFields } : p));
+    syncToDb(() => api.updateProduct(id, updatedFields), 'update product');
     showToast(`Product updated successfully! 💛`);
   };
 
@@ -199,6 +268,7 @@ export const StoreProvider = ({ children }) => {
     setProducts(prev => prev.map(p => {
       if (p.id === id) {
         const newStatus = !p.inStock;
+        syncToDb(() => api.updateProduct(id, { inStock: newStatus }), 'stock status');
         showToast(`Stock updated: ${p.name} is now ${newStatus ? 'In Stock 🟢' : 'Sold Out 🔴'}`);
         return { ...p, inStock: newStatus };
       }
@@ -208,11 +278,13 @@ export const StoreProvider = ({ children }) => {
 
   const deleteProduct = (id) => {
     setProducts(prev => prev.filter(p => p.id !== id));
+    syncToDb(() => api.deleteProduct(id), 'delete product');
     showToast("Product deleted from store.", "info");
   };
 
   const resetProductsToDefault = () => {
     setProducts(initialProducts);
+    syncToDb(() => api.seed(), 'reset catalog');
     showToast("Catalog reset to default items.", "info");
   };
 
@@ -225,6 +297,7 @@ export const StoreProvider = ({ children }) => {
       status: 'Pending WhatsApp Confirmation'
     };
     setOrders(prev => [newOrder, ...prev]);
+    syncToDb(() => api.createOrder(orderData), 'order');
     return newOrder;
   };
 
@@ -236,17 +309,20 @@ export const StoreProvider = ({ children }) => {
       status: 'Inquiry Sent'
     };
     setCustomRequests(prev => [newReq, ...prev]);
+    syncToDb(() => api.createCustomRequest(requestData), 'custom request');
     return newReq;
   };
 
   const updateOrderStatus = (orderId, newStatus) => {
     setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+    syncToDb(() => api.updateOrder(orderId, newStatus), 'order status');
     showToast(`Order status updated to "${newStatus}"`);
   };
 
   // Settings update
   const updateSettings = (newSettings) => {
     setSettings(prev => ({ ...prev, ...newSettings }));
+    syncToDb(() => api.updateSettings(newSettings), 'settings');
     showToast("Store settings saved! 💛");
   };
 
@@ -360,6 +436,8 @@ export const StoreProvider = ({ children }) => {
         toastMessage,
         cartTotal,
         cartCount,
+        isDbConnected,
+        isDbLoading,
         // Setters
         setIsCartOpen,
         setIsCustomModalOpen,

@@ -1,0 +1,18 @@
+name = "batoot"
+compatibility_date = "2025-09-01"
+pages_build_output_dir = "dist"
+
+# Cloudflare D1 database: "batoot"
+#
+# `database_id` below is only used for REMOTE commands (--remote) and CLI deploys.
+# Replace it with your real id from:  npx wrangler d1 list
+#
+# Local commands (`npm run db:seed`, `npm run dev:cf`) work as-is.
+#
+# If you deploy via the Cloudflare dashboard/Git integration instead, attach the
+# binding there — Workers & Pages > batoot > Settings > Bindings > Add > D1:
+#   Variable name: DB     Database: batoot
+[[d1_databases]]
+binding = "DB"
+database_name = "batoot"
+database_id = "00000000-0000-0000-0000-000000000000"

@@ -4,6 +4,52 @@ A modern, cozy, yellow & white themed e-commerce website for **Batoot 🪿** han
 
 ---
 
+## ☁️ Cloudflare D1 Database (`batoot`)
+
+Products, orders, custom requests, and settings are stored in **Cloudflare D1** and
+served through **Pages Functions** under `/api/*`.
+
+### Local development (works out of the box)
+
+```bash
+npm run db:seed    # create the tables in the local D1
+npm run dev:cf     # build + serve on :8788 with the local D1 bound as `DB`
+curl -X POST localhost:8788/api/seed   # load the default catalog
+```
+
+### Going live on Cloudflare
+
+1. Bind the database to your Pages project — in the dashboard:
+   **Workers & Pages → batoot → Settings → Bindings → Add → D1 database**
+   with variable name `DB` and database `batoot`.
+   (Or paste your real id from `npx wrangler d1 list` into `wrangler.toml`.)
+2. Create the tables on the cloud database:
+   ```bash
+   npx wrangler login
+   npm run db:seed:remote
+   ```
+3. Load the default catalog once deployed:
+   ```bash
+   curl -X POST https://<your-site>.pages.dev/api/seed
+   ```
+
+`npm run dev` (plain Vite) still works — if the API isn't reachable the app
+falls back to the bundled catalog and localStorage, so the site never breaks.
+
+### API endpoints
+
+| Method | Route | Purpose |
+| --- | --- | --- |
+| GET / POST | `/api/products` | List / create products |
+| GET / PUT / DELETE | `/api/products/:id` | Read / update / delete a product |
+| GET / POST | `/api/orders` | List / record orders |
+| PUT / DELETE | `/api/orders/:id` | Update status / delete |
+| GET / POST | `/api/custom-requests` | List / record custom requests |
+| GET / PUT | `/api/settings` | Read / save store settings |
+| POST | `/api/seed` | Load the default catalog + settings |
+
+---
+
 ## 🌟 Key Features
 
 1. **Yellow & White Cozy Aesthetic**:
