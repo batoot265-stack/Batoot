@@ -5,11 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 5173",
-    "build": "vite build",
+    "build": "vite build && wrangler pages functions build --outdir ./dist/worker --compatibility-date=2025-09-01",
     "preview": "vite preview --host 0.0.0.0 --port 5173",
     "db:seed": "wrangler d1 execute batoot --local --persist-to=.wrangler/state --file=./schema.sql",
     "db:seed:remote": "wrangler d1 execute batoot --remote --file=./schema.sql",
-    "dev:cf": "npm run build && wrangler pages dev dist --persist-to=.wrangler/state --ip 0.0.0.0 --port 8788"
+    "dev:cf": "npm run build && wrangler dev --persist-to=.wrangler/state --ip 0.0.0.0 --port 8788"
   },
   "dependencies": {
     "clsx": "^2.1.1",

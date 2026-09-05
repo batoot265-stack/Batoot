@@ -17,20 +17,28 @@ npm run dev:cf     # build + serve on :8788 with the local D1 bound as `DB`
 curl -X POST localhost:8788/api/seed   # load the default catalog
 ```
 
-### Going live on Cloudflare
+### Going live on Cloudflare (Workers + Git Builds)
 
-1. Bind the database to your Pages project — in the dashboard:
-   **Workers & Pages → batoot → Settings → Bindings → Add → D1 database**
-   with variable name `DB` and database `batoot`.
-   (Or paste your real id from `npx wrangler d1 list` into `wrangler.toml`.)
-2. Create the tables on the cloud database:
+This project deploys as a **Worker with static assets** (not a Pages project):
+`npm run build` outputs `dist/client` (the site) and `dist/worker/index.js`
+(the `functions/` folder compiled into one Worker script), and `wrangler deploy`
+uploads both with the `DB` D1 binding attached.
+
+1. Make sure the D1 binding in `wrangler.toml` has the **real** `database_id`
+   (dashboard → D1 → `batoot` → copy the Database ID, or `npx wrangler d1 list`).
+   The binding name must stay `DB` — every function uses `env.DB`.
+2. In **Workers & Pages → batoot → Builds**, the defaults must be:
+   build command `npm run build`, deploy command `npx wrangler deploy`
+   (`.node-version` pins Node 22, which Wrangler 4 requires).
+3. Create the tables on the cloud database (once):
    ```bash
    npx wrangler login
    npm run db:seed:remote
    ```
-3. Load the default catalog once deployed:
+   (…or paste `schema.sql` into the D1 console in the dashboard.)
+4. Load the default catalog once deployed:
    ```bash
-   curl -X POST https://<your-site>.pages.dev/api/seed
+   curl -X POST https://batoot.<account>.workers.dev/api/seed
    ```
 
 `npm run dev` (plain Vite) still works — if the API isn't reachable the app
