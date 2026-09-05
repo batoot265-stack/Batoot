@@ -1,17 +1,23 @@
 name = "batoot"
+# The `main` script is generated at build time from the Pages-style `functions/`
+# folder (see the `build` script in package.json / `wrangler pages functions build`).
+# It only exists after `npm run build` — which is exactly what the Cloudflare
+# Builds pipeline runs before `wrangler deploy`.
+main = "./dist/worker/index.js"
 compatibility_date = "2025-09-01"
-pages_build_output_dir = "dist"
 
-# Cloudflare D1 database: "batoot"
-#
-# `database_id` below is only used for REMOTE commands (--remote) and CLI deploys.
-# Replace it with your real id from:  npx wrangler d1 list
-#
-# Local commands (`npm run db:seed`, `npm run dev:cf`) work as-is.
-#
-# If you deploy via the Cloudflare dashboard/Git integration instead, attach the
-# binding there — Workers & Pages > batoot > Settings > Bindings > Add > D1:
-#   Variable name: DB     Database: batoot
+# Static assets (the Vite client build) are served directly by the Worker.
+[assets]
+directory = "./dist/client"
+binding = "ASSETS"
+# Unknown non-API paths fall back to index.html (single-page app).
+not_found_handling = "single-page-application"
+# Everything under /api/* is handled by the Worker script (the bundled
+# Pages Functions), never by the static-asset lookup.
+run_worker_first = ["/api/*"]
+
+# Cloudflare D1 database "batoot".
+# `binding` MUST stay "DB" — every function in functions/ uses env.DB.
 [[d1_databases]]
 binding = "DB"
 database_name = "batoot"
