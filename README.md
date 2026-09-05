@@ -9,27 +9,29 @@ A modern, cozy, yellow & white themed e-commerce website for **Batoot 🪿** han
 Products, orders, custom requests, and settings are stored in **Cloudflare D1** and
 served through **Pages Functions** under `/api/*`.
 
-### One-time setup
+### Local development (works out of the box)
 
-1. Get your database id and paste it into `wrangler.toml`:
-   ```bash
-   npx wrangler d1 list
-   ```
+```bash
+npm run db:seed    # create the tables in the local D1
+npm run dev:cf     # build + serve on :8788 with the local D1 bound as `DB`
+curl -X POST localhost:8788/api/seed   # load the default catalog
+```
+
+### Going live on Cloudflare
+
+1. Bind the database to your Pages project — in the dashboard:
+   **Workers & Pages → batoot → Settings → Bindings → Add → D1 database**
+   with variable name `DB` and database `batoot`.
+   (Or paste your real id from `npx wrangler d1 list` into `wrangler.toml`.)
 2. Create the tables on the cloud database:
    ```bash
+   npx wrangler login
    npm run db:seed:remote
    ```
-3. Load the default catalog (once deployed, or via local dev):
+3. Load the default catalog once deployed:
    ```bash
    curl -X POST https://<your-site>.pages.dev/api/seed
    ```
-
-### Local development with the real database
-
-```bash
-npm run dev:cf     # builds + serves on :8788 with a local D1 binding
-npm run db:seed    # create tables in the local D1
-```
 
 `npm run dev` (plain Vite) still works — if the API isn't reachable the app
 falls back to the bundled catalog and localStorage, so the site never breaks.
