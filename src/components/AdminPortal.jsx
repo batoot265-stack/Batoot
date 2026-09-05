@@ -186,13 +186,13 @@ export const AdminPortal = () => {
     { label: 'Ducks Pair 🦆🦆', path: '/images/products/duck-bonnet-pair.jpg' },
     { label: 'Yellow Star ⭐️', path: '/images/products/star-yellow.jpg' },
     { label: 'Blue Star ⭐️', path: '/images/products/star-blue.jpg' },
-    { label: 'Crescent Moon 🌙', path: '/images/products/crescent-moon.svg' },
-    { label: 'Mini Whale 🐋', path: '/images/products/mini-whale.svg' },
-    { label: 'Coquette Bow 🎀', path: '/images/products/coquette-bow.svg' },
-    { label: 'Red Pepper 🌶️', path: '/images/products/pepper-red.svg' },
-    { label: 'Green Pepper 🫑', path: '/images/products/pepper-green.svg' },
-    { label: 'Yellow Pepper 🟡', path: '/images/products/pepper-yellow.svg' },
-    { label: 'Spider Tapestry 🕸️', path: '/images/products/spiderman-tapestry.svg' },
+    { label: 'Crescent Moon 🌙', path: '/images/products/crescent-moon.jpg' },
+    { label: 'Mini Whale 🐋', path: '/images/products/mini-whale.jpg' },
+    { label: 'Coquette Bow 🎀', path: '/images/products/coquette-bow.jpg' },
+    { label: 'Red Pepper 🌶️', path: '/images/products/pepper-red.jpg' },
+    { label: 'Green Pepper 🫑', path: '/images/products/pepper-green.jpg' },
+    { label: 'Yellow Pepper 🟡', path: '/images/products/pepper-yellow.jpg' },
+    { label: 'Spider Tapestry 🕸️', path: '/images/products/spiderman-tapestry.jpg' },
     { label: 'Hero Studio 🌺', path: '/images/batoot-hero.jpg' }
   ];
 
