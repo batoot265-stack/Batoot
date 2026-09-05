@@ -4,6 +4,50 @@ A modern, cozy, yellow & white themed e-commerce website for **Batoot 🪿** han
 
 ---
 
+## ☁️ Cloudflare D1 Database (`batoot`)
+
+Products, orders, custom requests, and settings are stored in **Cloudflare D1** and
+served through **Pages Functions** under `/api/*`.
+
+### One-time setup
+
+1. Get your database id and paste it into `wrangler.toml`:
+   ```bash
+   npx wrangler d1 list
+   ```
+2. Create the tables on the cloud database:
+   ```bash
+   npm run db:seed:remote
+   ```
+3. Load the default catalog (once deployed, or via local dev):
+   ```bash
+   curl -X POST https://<your-site>.pages.dev/api/seed
+   ```
+
+### Local development with the real database
+
+```bash
+npm run dev:cf     # builds + serves on :8788 with a local D1 binding
+npm run db:seed    # create tables in the local D1
+```
+
+`npm run dev` (plain Vite) still works — if the API isn't reachable the app
+falls back to the bundled catalog and localStorage, so the site never breaks.
+
+### API endpoints
+
+| Method | Route | Purpose |
+| --- | --- | --- |
+| GET / POST | `/api/products` | List / create products |
+| GET / PUT / DELETE | `/api/products/:id` | Read / update / delete a product |
+| GET / POST | `/api/orders` | List / record orders |
+| PUT / DELETE | `/api/orders/:id` | Update status / delete |
+| GET / POST | `/api/custom-requests` | List / record custom requests |
+| GET / PUT | `/api/settings` | Read / save store settings |
+| POST | `/api/seed` | Load the default catalog + settings |
+
+---
+
 ## 🌟 Key Features
 
 1. **Yellow & White Cozy Aesthetic**:

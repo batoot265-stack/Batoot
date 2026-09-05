@@ -7,8 +7,7 @@ export const initialProducts = [
     originalPrice: 550,
     image: "/images/products/lily-flower.jpg",
     gallery: [
-      "/images/products/lily-flower.jpg",
-      "/images/batoot-hero.jpg"
+      "/images/products/lily-flower.jpg"
     ],
     badge: "Hero Collection 🌺",
     inStock: true,
@@ -52,8 +51,7 @@ export const initialProducts = [
     originalPrice: 180,
     image: "/images/products/lavender-coaster.jpg",
     gallery: [
-      "/images/products/lavender-coaster.jpg",
-      "/images/batoot-hero.jpg"
+      "/images/products/lavender-coaster.jpg"
     ],
     badge: "Cozy Home 🪻",
     inStock: true,
