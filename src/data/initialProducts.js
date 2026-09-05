@@ -145,12 +145,12 @@ export const initialProducts = [
     rating: 4.9,
     reviewsCount: 27,
     shortDescription: "A crescent keychain or bag charm🌙 — To light up your way wherever you go <3",
-    description: "A crescent keychain or bag charm 🌙\n\nTo light up your way wherever you go <3\n\nA magical handcrafted golden crescent moon charm with smiling face and hanging micro-star. Brings cozy celestial warmth wherever you clip it.",
+    description: "A crescent keychain or bag charm 🌙\n\nTo light up your way wherever you go <3\n\nA magical handcrafted crescent moon charm with a sweet smiling face and a sturdy metal keyring. Brings cozy celestial warmth wherever you clip it.",
     dimensions: "Approx. 8 cm height",
-    yarnType: "Silky Soft Cotton Yarn + Gold Keyring",
+    yarnType: "Soft Milk Cotton Yarn + Metal Keyring",
     careGuide: "Spot clean gently.",
     isFeatured: false,
-    colors: ["Golden Honey Moon 🌙", "Silver Pearl Moon 🤍"]
+    colors: ["Sunny Yellow Moon 💛", "Sky Blue Moon 💙"]
   },
   {
     id: "prod-mini-whale",
@@ -160,7 +160,8 @@ export const initialProducts = [
     originalPrice: 180,
     image: "/images/products/mini-whale.jpg",
     gallery: [
-      "/images/products/mini-whale.jpg"
+      "/images/products/mini-whale.jpg",
+      "/images/products/mini-whale-2.jpg"
     ],
     badge: "Ocean Vibes 🌊",
     inStock: true,
