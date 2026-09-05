@@ -6,6 +6,11 @@ name = "batoot"
 main = "./dist/worker/index.js"
 compatibility_date = "2025-09-01"
 
+# Run the frontend + functions builds automatically, even if the dashboard's
+# build command field is ever reset — `wrangler deploy` guarantees a fresh dist/.
+[build]
+command = "npm run build"
+
 # Static assets (the Vite client build) are served directly by the Worker.
 [assets]
 directory = "./dist/client"
@@ -18,7 +23,12 @@ run_worker_first = ["/api/*"]
 
 # Cloudflare D1 database "batoot".
 # `binding` MUST stay "DB" — every function in functions/ uses env.DB.
+#
+# `database_id` is intentionally omitted: `wrangler deploy` (v4.129+) resolves
+# the database "batoot" by name in the deploying account, which keeps this file
+# valid for the CI build. If an older wrangler ever complains, paste the real id
+# here: dashboard → D1 → batoot → View details → Database ID.
 [[d1_databases]]
 binding = "DB"
 database_name = "batoot"
-database_id = "00000000-0000-0000-0000-000000000000"
+
