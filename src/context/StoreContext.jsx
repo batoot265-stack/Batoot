@@ -265,15 +265,15 @@ export const StoreProvider = ({ children }) => {
   };
 
   const toggleProductStock = (id) => {
-    setProducts(prev => prev.map(p => {
-      if (p.id === id) {
-        const newStatus = !p.inStock;
-        syncToDb(() => api.updateProduct(id, { inStock: newStatus }), 'stock status');
-        showToast(`Stock updated: ${p.name} is now ${newStatus ? 'In Stock 🟢' : 'Sold Out 🔴'}`);
-        return { ...p, inStock: newStatus };
-      }
-      return p;
-    }));
+    // Compute outside the updater: side effects (API sync, toasts) must not
+    // run inside a state updater — React StrictMode double-invokes updaters,
+    // which would fire the sync + toast twice.
+    const target = products.find(p => p.id === id);
+    if (!target) return;
+    const newStatus = !target.inStock;
+    setProducts(prev => prev.map(p => p.id === id ? { ...p, inStock: newStatus } : p));
+    syncToDb(() => api.updateProduct(id, { inStock: newStatus }), 'stock status');
+    showToast(`Stock updated: ${target.name} is now ${newStatus ? 'In Stock 🟢' : 'Sold Out 🔴'}`);
   };
 
   const deleteProduct = (id) => {
@@ -297,7 +297,20 @@ export const StoreProvider = ({ children }) => {
       status: 'Pending WhatsApp Confirmation'
     };
     setOrders(prev => [newOrder, ...prev]);
-    syncToDb(() => api.createOrder(orderData), 'order');
+    // Map to the API shape (name/total) and send our id so the cloud record
+    // matches the local one — otherwise D1 would store name=null, total=0
+    // under a different id.
+    syncToDb(() => api.createOrder({
+      id: newOrder.id,
+      name: newOrder.customerName ?? newOrder.name ?? null,
+      phone: newOrder.phone ?? null,
+      address: newOrder.address ?? null,
+      governorate: newOrder.governorate ?? null,
+      notes: newOrder.notes ?? null,
+      items: newOrder.items ?? [],
+      total: newOrder.totalAmount ?? newOrder.total ?? 0,
+      status: newOrder.status
+    }), 'order');
     return newOrder;
   };
 
@@ -309,7 +322,7 @@ export const StoreProvider = ({ children }) => {
       status: 'Inquiry Sent'
     };
     setCustomRequests(prev => [newReq, ...prev]);
-    syncToDb(() => api.createCustomRequest(requestData), 'custom request');
+    syncToDb(() => api.createCustomRequest(newReq), 'custom request');
     return newReq;
   };
 
@@ -319,6 +332,12 @@ export const StoreProvider = ({ children }) => {
     showToast(`Order status updated to "${newStatus}"`);
   };
 
+  const deleteOrder = (orderId) => {
+    setOrders(prev => prev.filter(o => o.id !== orderId));
+    syncToDb(() => api.deleteOrder(orderId), 'delete order');
+    showToast("Order deleted from log.", "info");
+  };
+
   // Settings update
   const updateSettings = (newSettings) => {
     setSettings(prev => ({ ...prev, ...newSettings }));
@@ -326,9 +345,11 @@ export const StoreProvider = ({ children }) => {
     showToast("Store settings saved! 💛");
   };
 
-  // Admin Auth
+  // Admin Auth — only the configured PIN is accepted. (The default PIN is
+  // '1234' from initialSettings; previously hardcoded fallback PINs meant
+  // changing the PIN never actually locked out the old ones.)
   const loginAdmin = (pin) => {
-    if (pin === settings.adminPin || pin === '1234' || pin === 'batoot2026') {
+    if (pin && pin === settings.adminPin) {
       setIsAdminLoggedIn(true);
       try {
         sessionStorage.setItem('batoot_admin_auth', 'true');
@@ -461,6 +482,7 @@ export const StoreProvider = ({ children }) => {
         recordOrder,
         recordCustomRequest,
         updateOrderStatus,
+        deleteOrder,
         // Settings & Auth
         updateSettings,
         loginAdmin,

@@ -50,7 +50,7 @@ export const Hero = () => {
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
               <button
                 onClick={handleScrollToShop}
-                className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 text-slate-950 px-6 py-3.5 rounded-2xl font-black text-sm sm:text-base shadow-lg shadow-yellow-200/70 hover:shadow-xl hover:scale-[1.02] active:scale-98 transition-all border border-yellow-300"
+                className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 text-slate-950 px-6 py-3.5 rounded-2xl font-black text-sm sm:text-base shadow-lg shadow-yellow-200/70 hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all border border-yellow-300"
               >
                 <span>Shop Collection</span>
                 <ArrowRight className="w-4 h-4" />
@@ -77,7 +77,7 @@ export const Hero = () => {
 
             {/* Trust Badges */}
             <div className="pt-6 border-t border-yellow-200/60 grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
-              <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/70 border border-yellow-100 shadow-xs">
+              <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/70 border border-yellow-100 shadow-sm">
                 <div className="w-8 h-8 rounded-lg bg-yellow-100 text-yellow-800 flex items-center justify-center font-bold shrink-0">
                   <Truck className="w-4 h-4" />
                 </div>
@@ -87,7 +87,7 @@ export const Hero = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/70 border border-yellow-100 shadow-xs">
+              <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/70 border border-yellow-100 shadow-sm">
                 <div className="w-8 h-8 rounded-lg bg-yellow-100 text-yellow-800 flex items-center justify-center font-bold shrink-0">
                   🧶
                 </div>
@@ -97,7 +97,7 @@ export const Hero = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/70 border border-yellow-100 shadow-xs">
+              <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/70 border border-yellow-100 shadow-sm">
                 <div className="w-8 h-8 rounded-lg bg-yellow-100 text-yellow-800 flex items-center justify-center font-bold shrink-0">
                   <Palette className="w-4 h-4" />
                 </div>
@@ -107,7 +107,7 @@ export const Hero = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/70 border border-yellow-100 shadow-xs">
+              <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/70 border border-yellow-100 shadow-sm">
                 <div className="w-8 h-8 rounded-lg bg-yellow-100 text-yellow-800 flex items-center justify-center font-bold shrink-0">
                   <Heart className="w-4 h-4 text-rose-500 fill-rose-500" />
                 </div>
@@ -156,7 +156,7 @@ export const Hero = () => {
                     {heroLily && (
                       <button
                         onClick={() => setSelectedProduct(heroLily)}
-                        className="text-xs font-bold bg-yellow-400 hover:bg-yellow-500 text-yellow-950 px-3 py-1.5 rounded-xl transition-colors shadow-xs"
+                        className="text-xs font-bold bg-yellow-400 hover:bg-yellow-500 text-yellow-950 px-3 py-1.5 rounded-xl transition-colors shadow-sm"
                       >
                         Quick View 👁️
                       </button>

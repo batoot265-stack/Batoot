@@ -33,7 +33,7 @@ export const ProductCard = ({ product }) => {
         <img
           src={product.image}
           alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           onError={(e) => {
             e.target.src = '/images/batoot-hero.jpg';
           }}
@@ -42,7 +42,7 @@ export const ProductCard = ({ product }) => {
         {/* Floating Top Badges */}
         <div className="absolute top-3 inset-x-3 flex items-center justify-between pointer-events-none">
           {product.badge ? (
-            <span className="bg-yellow-400/95 text-yellow-950 text-[11px] font-black px-2.5 py-1 rounded-full shadow-sm backdrop-blur-xs">
+            <span className="bg-yellow-400/95 text-yellow-950 text-[11px] font-black px-2.5 py-1 rounded-full shadow-sm backdrop-blur-sm">
               {product.badge}
             </span>
           ) : (

@@ -45,7 +45,7 @@ export const ProductModal = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 animate-fadeIn">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-fadeIn">
       
       {/* Backdrop click to close */}
       <div className="fixed inset-0" onClick={handleClose} />
@@ -192,7 +192,7 @@ export const ProductModal = () => {
                         onClick={() => setSelectedColor(color)}
                         className={`text-xs font-bold px-3 py-1.5 rounded-xl border transition-all ${
                           currentColor === color
-                            ? 'bg-yellow-400 text-yellow-950 border-yellow-500 shadow-xs'
+                            ? 'bg-yellow-400 text-yellow-950 border-yellow-500 shadow-sm'
                             : 'bg-white text-slate-700 border-yellow-200 hover:bg-yellow-50'
                         }`}
                       >

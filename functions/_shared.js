@@ -71,3 +71,12 @@ ON CONFLICT(id) DO UPDATE SET
   short_description=excluded.short_description, description=excluded.description,
   dimensions=excluded.dimensions, yarn_type=excluded.yarn_type,
   care_guide=excluded.care_guide, is_featured=excluded.is_featured`;
+
+// SQLite datetime('now') -> ISO 8601 (UTC) so `new Date()` parses it in every browser.
+export const toISODate = (sqliteDatetime) => {
+  if (!sqliteDatetime) return new Date().toISOString();
+  if (sqliteDatetime instanceof Date) return sqliteDatetime.toISOString();
+  const s = String(sqliteDatetime).trim();
+  if (/T/.test(s)) return s.endsWith('Z') ? s : `${s}Z`;
+  return `${s.replace(' ', 'T')}Z`;
+};

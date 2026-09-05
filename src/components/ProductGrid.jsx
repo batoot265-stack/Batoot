@@ -94,7 +94,7 @@ export const ProductGrid = () => {
         </div>
 
         {/* Filters and Sorting Toolbar */}
-        <div className="flex flex-wrap items-center justify-between gap-3 my-6 p-3 rounded-2xl bg-white border border-yellow-200 shadow-xs">
+        <div className="flex flex-wrap items-center justify-between gap-3 my-6 p-3 rounded-2xl bg-white border border-yellow-200 shadow-sm">
           
           {/* Stock Filter Checkbox */}
           <label className="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer select-none">

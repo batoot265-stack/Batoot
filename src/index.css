@@ -50,10 +50,9 @@
 /* Texture pattern */
 .bg-crochet-pattern {
   background-color: #FFFDF6;
-  background-image: radial-gradient(#FDE047 0.75px, transparent 0.75px), radial-gradient(#FDE047 0.75px, #FFFDF6 0.75px);
+  background-image: radial-gradient(rgba(253, 224, 71, 0.15) 0.75px, transparent 0.75px), radial-gradient(rgba(253, 224, 71, 0.15) 0.75px, #FFFDF6 0.75px);
   background-size: 30px 30px;
   background-position: 0 0, 15px 15px;
-  background-opacity: 0.15;
 }
 
 .yellow-gradient {

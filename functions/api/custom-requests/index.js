@@ -1,9 +1,9 @@
-import { json, err } from '../../_shared.js';
+import { json, err, toISODate } from '../../_shared.js';
 
 const rowToReq = (r) => ({
   id: r.id, name: r.name, phone: r.phone, itemType: r.item_type,
   colorPreference: r.color_preference, size: r.size, deadline: r.deadline,
-  description: r.description, status: r.status, createdAt: r.created_at
+  description: r.description, status: r.status, createdAt: toISODate(r.created_at)
 });
 
 export async function onRequestGet({ env }) {
@@ -20,7 +20,8 @@ export async function onRequestGet({ env }) {
 export async function onRequestPost({ request, env }) {
   try {
     const b = await request.json();
-    const id = 'REQ-' + Math.floor(100000 + Math.random() * 900000);
+    // Keep the client-provided id so local + cloud records stay in sync.
+    const id = b.id || ('REQ-' + Math.floor(100000 + Math.random() * 900000));
     await env.DB.prepare(
       `INSERT INTO custom_requests
        (id, name, phone, item_type, color_preference, size, deadline, description, status)

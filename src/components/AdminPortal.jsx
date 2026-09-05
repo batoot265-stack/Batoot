@@ -38,6 +38,7 @@ export const AdminPortal = () => {
     orders,
     customRequests,
     updateOrderStatus,
+    deleteOrder,
     settings,
     updateSettings,
     showToast
@@ -197,7 +198,7 @@ export const AdminPortal = () => {
   ];
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 animate-fadeIn">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-fadeIn">
       <div className="fixed inset-0" onClick={() => setIsAdminModalOpen(false)} />
 
       <div className="relative bg-white rounded-3xl max-w-5xl w-full shadow-2xl border-4 border-yellow-300 overflow-hidden z-10 max-h-[92vh] flex flex-col my-auto">
@@ -394,7 +395,7 @@ export const AdminPortal = () => {
                         setEditingProduct(null);
                         setActiveTab('add');
                       }}
-                      className="px-4 py-2 text-xs font-black text-yellow-950 bg-yellow-400 hover:bg-yellow-500 rounded-xl shadow-xs flex items-center gap-1.5 transition-colors"
+                      className="px-4 py-2 text-xs font-black text-yellow-950 bg-yellow-400 hover:bg-yellow-500 rounded-xl shadow-sm flex items-center gap-1.5 transition-colors"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       <span>Add Product</span>
@@ -407,7 +408,7 @@ export const AdminPortal = () => {
                   {products.map((item) => (
                     <div
                       key={item.id}
-                      className="p-4 rounded-2xl bg-white border-2 border-yellow-200 hover:border-yellow-400 transition-all shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                      className="p-4 rounded-2xl bg-white border-2 border-yellow-200 hover:border-yellow-400 transition-all shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
                     >
                       {/* Product Media & Info */}
                       <div className="flex items-center gap-3 min-w-0">
@@ -734,10 +735,16 @@ export const AdminPortal = () => {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {orders.map((order) => (
+                    {orders.map((order) => {
+                      // Tolerate both shapes: local records use customerName/totalAmount,
+                      // cloud (D1) records use name/total.
+                      const customerName = order.customerName ?? order.name ?? '—';
+                      const total = order.totalAmount ?? order.total ?? 0;
+                      const waPhone = String(order.phone || '').replace(/[^0-9]/g, '').replace(/^0+/, '');
+                      return (
                       <div
                         key={order.id}
-                        className="bg-white p-4 rounded-2xl border-2 border-yellow-200 shadow-xs space-y-3"
+                        className="bg-white p-4 rounded-2xl border-2 border-yellow-200 shadow-sm space-y-3"
                       >
                         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-yellow-100 pb-2">
                           <div className="flex items-center gap-2">
@@ -745,23 +752,34 @@ export const AdminPortal = () => {
                               {order.id}
                             </span>
                             <span className="text-xs text-slate-400">
-                              {new Date(order.createdAt).toLocaleString()}
+                              {order.createdAt ? new Date(order.createdAt).toLocaleString() : ''}
                             </span>
                           </div>
 
                           <div className="flex items-center gap-2">
                             <span className="text-xs font-black text-slate-900 bg-yellow-50 px-2.5 py-1 rounded-lg border border-yellow-200">
-                              Total: {order.totalAmount} EGP (Free Shipping)
+                              Total: {total} EGP (Free Shipping)
                             </span>
-                            <a
-                              href={`https://wa.me/20${order.phone ? order.phone.replace(/^0+/, '') : ''}`}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="px-3 py-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl flex items-center gap-1 shadow-xs"
+                            {waPhone && (
+                              <a
+                                href={`https://wa.me/20${waPhone}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="px-3 py-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl flex items-center gap-1 shadow-sm"
+                              >
+                                <Phone className="w-3 h-3" />
+                                <span>Chat on WhatsApp</span>
+                              </a>
+                            )}
+                            <button
+                              onClick={() => {
+                                if (window.confirm(`Delete order ${order.id}?`)) deleteOrder(order.id);
+                              }}
+                              className="p-1.5 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 transition-colors"
+                              title="Delete order"
                             >
-                              <Phone className="w-3 h-3" />
-                              <span>Chat on WhatsApp</span>
-                            </a>
+                              <Trash2 className="w-4 h-4" />
+                            </button>
                           </div>
                         </div>
 
@@ -769,7 +787,7 @@ export const AdminPortal = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                           <div>
                             <span className="font-bold text-slate-700">Customer: </span>
-                            <span className="text-slate-900 font-extrabold">{order.customerName}</span>
+                            <span className="text-slate-900 font-extrabold">{customerName}</span>
                           </div>
                           <div>
                             <span className="font-bold text-slate-700">Phone: </span>
@@ -785,6 +803,21 @@ export const AdminPortal = () => {
                               <span>{order.notes}</span>
                             </div>
                           )}
+                          <div className="sm:col-span-2 flex items-center gap-2">
+                            <span className="font-bold text-slate-700">Status:</span>
+                            <select
+                              value={order.status || 'Pending WhatsApp Confirmation'}
+                              onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                              className="bg-yellow-50 border border-yellow-200 rounded-xl px-2.5 py-1 text-xs font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-yellow-400"
+                            >
+                              <option>Pending WhatsApp Confirmation</option>
+                              <option>Confirmed</option>
+                              <option>In Progress</option>
+                              <option>Shipped</option>
+                              <option>Delivered</option>
+                              <option>Cancelled</option>
+                            </select>
+                          </div>
                         </div>
 
                         {/* Items list */}
@@ -800,7 +833,8 @@ export const AdminPortal = () => {
                           </ul>
                         </div>
                       </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -823,10 +857,12 @@ export const AdminPortal = () => {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {customRequests.map((req) => (
+                    {customRequests.map((req) => {
+                      const waPhone = String(req.phone || '').replace(/[^0-9]/g, '').replace(/^0+/, '');
+                      return (
                       <div
                         key={req.id}
-                        className="bg-white p-4 rounded-2xl border-2 border-yellow-200 shadow-xs space-y-3"
+                        className="bg-white p-4 rounded-2xl border-2 border-yellow-200 shadow-sm space-y-3"
                       >
                         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-yellow-100 pb-2">
                           <div className="flex items-center gap-2">
@@ -834,19 +870,21 @@ export const AdminPortal = () => {
                               {req.id}
                             </span>
                             <span className="text-xs text-slate-400">
-                              {new Date(req.createdAt).toLocaleString()}
+                              {req.createdAt ? new Date(req.createdAt).toLocaleString() : ''}
                             </span>
                           </div>
 
-                          <a
-                            href={`https://wa.me/20${req.phone ? req.phone.replace(/^0+/, '') : ''}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="px-3 py-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl flex items-center gap-1 shadow-xs"
-                          >
-                            <Phone className="w-3 h-3" />
-                            <span>Reply to {req.name} on WhatsApp</span>
-                          </a>
+                          {waPhone && (
+                            <a
+                              href={`https://wa.me/20${waPhone}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="px-3 py-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl flex items-center gap-1 shadow-sm"
+                            >
+                              <Phone className="w-3 h-3" />
+                              <span>Reply to {req.name} on WhatsApp</span>
+                            </a>
+                          )}
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
@@ -887,7 +925,8 @@ export const AdminPortal = () => {
                           <p className="text-slate-800 whitespace-pre-wrap">{req.description}</p>
                         </div>
                       </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>

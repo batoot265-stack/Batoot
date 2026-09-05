@@ -53,7 +53,7 @@ export const Footer = ({ onNavigate }) => {
                 href={settings.instagramUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="w-10 h-10 rounded-xl bg-yellow-900/60 hover:bg-[#E1306C] text-yellow-200 hover:text-white flex items-center justify-center transition-all shadow-xs"
+                className="w-10 h-10 rounded-xl bg-yellow-900/60 hover:bg-[#E1306C] text-yellow-200 hover:text-white flex items-center justify-center transition-all shadow-sm"
                 title="Follow on Instagram (@your.fav.crochet.gurly)"
                 aria-label="Instagram"
               >
@@ -64,7 +64,7 @@ export const Footer = ({ onNavigate }) => {
                 href={settings.tiktokUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="w-10 h-10 rounded-xl bg-yellow-900/60 hover:bg-black text-yellow-200 hover:text-[#00f2fe] flex items-center justify-center transition-all shadow-xs"
+                className="w-10 h-10 rounded-xl bg-yellow-900/60 hover:bg-black text-yellow-200 hover:text-[#00f2fe] flex items-center justify-center transition-all shadow-sm"
                 title="Watch on TikTok (@your.fav.crochet.gurly)"
                 aria-label="TikTok"
               >
@@ -75,7 +75,7 @@ export const Footer = ({ onNavigate }) => {
                 href={settings.facebookUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="w-10 h-10 rounded-xl bg-yellow-900/60 hover:bg-[#1877F2] text-yellow-200 hover:text-white flex items-center justify-center transition-all shadow-xs"
+                className="w-10 h-10 rounded-xl bg-yellow-900/60 hover:bg-[#1877F2] text-yellow-200 hover:text-white flex items-center justify-center transition-all shadow-sm"
                 title="Follow on Facebook"
                 aria-label="Facebook"
               >
@@ -86,7 +86,7 @@ export const Footer = ({ onNavigate }) => {
                 href={`https://wa.me/20${settings.whatsappNumber.replace(/^0+/, '')}`}
                 target="_blank"
                 rel="noreferrer"
-                className="w-10 h-10 rounded-xl bg-yellow-900/60 hover:bg-emerald-500 text-yellow-200 hover:text-white flex items-center justify-center transition-all shadow-xs"
+                className="w-10 h-10 rounded-xl bg-yellow-900/60 hover:bg-emerald-500 text-yellow-200 hover:text-white flex items-center justify-center transition-all shadow-sm"
                 title="Chat on WhatsApp (01093536058)"
                 aria-label="WhatsApp"
               >

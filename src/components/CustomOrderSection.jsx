@@ -207,7 +207,7 @@ export const CustomOrderSection = () => {
                 {/* 3 Step Process */}
                 <div className="space-y-3 pt-2">
                   <div className="flex items-start gap-3">
-                    <div className="w-7 h-7 rounded-lg bg-yellow-400 text-yellow-950 font-black text-xs flex items-center justify-center shrink-0 shadow-xs">
+                    <div className="w-7 h-7 rounded-lg bg-yellow-400 text-yellow-950 font-black text-xs flex items-center justify-center shrink-0 shadow-sm">
                       1
                     </div>
                     <div>
@@ -217,7 +217,7 @@ export const CustomOrderSection = () => {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-7 h-7 rounded-lg bg-yellow-400 text-yellow-950 font-black text-xs flex items-center justify-center shrink-0 shadow-xs">
+                    <div className="w-7 h-7 rounded-lg bg-yellow-400 text-yellow-950 font-black text-xs flex items-center justify-center shrink-0 shadow-sm">
                       2
                     </div>
                     <div>
@@ -227,7 +227,7 @@ export const CustomOrderSection = () => {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-7 h-7 rounded-lg bg-yellow-400 text-yellow-950 font-black text-xs flex items-center justify-center shrink-0 shadow-xs">
+                    <div className="w-7 h-7 rounded-lg bg-yellow-400 text-yellow-950 font-black text-xs flex items-center justify-center shrink-0 shadow-sm">
                       3
                     </div>
                     <div>
@@ -263,7 +263,7 @@ export const CustomOrderSection = () => {
 
       {/* Pop-up Custom Modal (when triggered from navbar or cards) */}
       {isCustomModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 animate-fadeIn">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-fadeIn">
           <div className="fixed inset-0" onClick={() => setIsCustomModalOpen(false)} />
           
           <div className="relative bg-white rounded-3xl max-w-xl w-full shadow-2xl border-4 border-yellow-200 overflow-hidden z-10 p-6 sm:p-8 max-h-[90vh] overflow-y-auto">

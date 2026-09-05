@@ -21,6 +21,7 @@ export const api = {
   listOrders:   ()             => req('/api/orders'),
   createOrder:  (o)            => req('/api/orders',        { method: 'POST', body: JSON.stringify(o) }),
   updateOrder:  (id, status)   => req(`/api/orders/${id}`,  { method: 'PUT',  body: JSON.stringify({ status }) }),
+  deleteOrder:  (id)           => req(`/api/orders/${id}`,  { method: 'DELETE' }),
 
   // Custom requests
   listCustomRequests:  ()  => req('/api/custom-requests'),

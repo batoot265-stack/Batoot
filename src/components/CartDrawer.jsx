@@ -119,7 +119,7 @@ export const CartDrawer = () => {
     <div className="fixed inset-0 z-50 overflow-hidden">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-black/50 backdrop-blur-xs transition-opacity animate-fadeIn"
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity animate-fadeIn"
         onClick={handleClose}
       />
 
@@ -210,7 +210,7 @@ export const CartDrawer = () => {
 
                           {/* Quantity Controls */}
                           <div className="flex items-center gap-2 mt-2">
-                            <div className="flex items-center border border-yellow-300 rounded-lg bg-white overflow-hidden shadow-2xs">
+                            <div className="flex items-center border border-yellow-300 rounded-lg bg-white overflow-hidden shadow-sm">
                               <button
                                 onClick={() => updateCartQuantity(index, -1)}
                                 className="px-2 py-0.5 text-xs font-bold text-yellow-900 hover:bg-yellow-100"

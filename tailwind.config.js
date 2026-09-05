@@ -31,11 +31,16 @@ export default {
         'bounce-slow': 'bounce 2.5s infinite',
         'pulse-subtle': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'wiggle': 'wiggle 1s ease-in-out infinite',
+        'fadeIn': 'fadeIn 0.25s ease-out',
       },
       keyframes: {
         wiggle: {
           '0%, 100%': { transform: 'rotate(-3deg)' },
           '50%': { transform: 'rotate(3deg)' },
+        },
+        fadeIn: {
+          '0%': { opacity: '0', transform: 'translateY(6px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         }
       }
     },
