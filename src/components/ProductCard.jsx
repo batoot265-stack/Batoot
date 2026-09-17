@@ -3,7 +3,7 @@ import { useStore } from '../context/StoreContext';
 import { ShoppingBag, Eye, Star, Truck, Check, Sparkles } from 'lucide-react';
 
 export const ProductCard = ({ product }) => {
-  const { addToCart, setSelectedProduct, getWhatsAppDirectUrl } = useStore();
+  const { addToCart, setSelectedProduct, getWhatsAppDirectUrl, whatsappHandle } = useStore();
 
   const handleQuickWhatsApp = (e) => {
     e.stopPropagation();
@@ -130,7 +130,7 @@ export const ProductCard = ({ product }) => {
 
             <button
               onClick={handleQuickWhatsApp}
-              title="Quick Order via WhatsApp (01093536058)"
+              title={`Quick Order via WhatsApp (${whatsappHandle})`}
               className="w-full py-2.5 px-2 rounded-xl text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center justify-center gap-1 transition-all"
             >
               <span>💬 WhatsApp</span>

@@ -29,7 +29,7 @@ export const CartDrawer = () => {
     generateWhatsAppOrderUrl,
     recordOrder,
     showToast,
-    settings
+    whatsappHandle
   } = useStore();
 
   const [checkoutStep, setCheckoutStep] = useState('cart'); // 'cart' | 'checkout' | 'success'
@@ -347,7 +347,7 @@ export const CartDrawer = () => {
                 <div className="p-3 bg-emerald-50 rounded-2xl border border-emerald-200 text-xs text-emerald-950 flex items-start gap-2">
                   <span className="text-base">💬</span>
                   <p className="leading-relaxed text-[11px]">
-                    When you click confirm, WhatsApp will open automatically to send your order details directly to <strong>{settings.whatsappDisplay}</strong> with your greeting & product names!
+                    When you click confirm, WhatsApp will open automatically to send your order details directly to <strong>{whatsappHandle}</strong> with your greeting & product names!
                   </p>
                 </div>
 
@@ -362,7 +362,7 @@ export const CartDrawer = () => {
                 </div>
                 <h3 className="text-xl font-black text-slate-900">Thank You for Ordering! 🪿💛</h3>
                 <p className="text-xs text-slate-600 max-w-xs mx-auto leading-relaxed">
-                  Your order details have been forwarded to our WhatsApp hotline (<strong>{settings.whatsappDisplay}</strong>). We'll confirm the order with you immediately and begin crafting your cozy crochet piece!
+                  Your order details have been forwarded to our WhatsApp (<strong>{whatsappHandle}</strong>). We'll confirm the order with you immediately and begin crafting your cozy crochet piece!
                 </p>
                 <div className="p-4 bg-yellow-50 rounded-2xl border border-yellow-200 text-xs text-yellow-900 font-bold">
                   <span>Stitched with love 💛 • Shipping details confirmed on WhatsApp</span>

@@ -263,9 +263,7 @@ export const initialProducts = [
 export const initialSettings = {
   storeName: "Batoot 🪿",
   tagline: "Handmade Crochet with Love",
-  whatsappNumber: "01093536058",
-  whatsappDisplay: "01093536058",
-  phone: "+20 109 353 6058",
+  whatsappUsername: "nooryxbatoot",
   announcementText: "✨ 100% HANDMADE WITH LOVE 🪿 • FAST DIRECT WHATSAPP CHECKOUT 💬",
   instagramUrl: "https://www.instagram.com/your.fav.crochet.gurly?igsh=Z3c2Nmd0Z2k5azNx",
   instagramHandle: "@your.fav.crochet.gurly",

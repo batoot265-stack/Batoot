@@ -3,7 +3,7 @@ import { useStore } from '../context/StoreContext';
 import { X, ShoppingBag, Star, Truck, ShieldCheck, Heart, Sparkles, Phone } from 'lucide-react';
 
 export const ProductModal = () => {
-  const { selectedProduct, setSelectedProduct, addToCart, getWhatsAppDirectUrl } = useStore();
+  const { selectedProduct, setSelectedProduct, addToCart, getWhatsAppDirectUrl, whatsappHandle } = useStore();
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState(null);
   const [customNote, setCustomNote] = useState('');
@@ -259,7 +259,7 @@ export const ProductModal = () => {
                     className="w-full py-3 px-4 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs sm:text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2"
                   >
                     <Phone className="w-4 h-4" />
-                    <span>Order on WhatsApp (01093536058)</span>
+                    <span>Order on WhatsApp {whatsappHandle}</span>
                   </button>
                 </div>
 

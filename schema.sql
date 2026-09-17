@@ -64,3 +64,21 @@ CREATE TABLE settings (
   key   TEXT PRIMARY KEY,
   value TEXT NOT NULL
 );
+
+-- Default store settings (WhatsApp is reached by username, not by number).
+INSERT INTO settings (key, value) VALUES
+  ('storeName',        '"Batoot 🪿"'),
+  ('tagline',          '"Handmade Crochet with Love"'),
+  ('whatsappUsername', '"nooryxbatoot"'),
+  ('announcementText', '"✨ 100% HANDMADE WITH LOVE 🪿 • FAST DIRECT WHATSAPP CHECKOUT 💬"'),
+  ('instagramUrl',     '"https://www.instagram.com/your.fav.crochet.gurly?igsh=Z3c2Nmd0Z2k5azNx"'),
+  ('instagramHandle',  '"@your.fav.crochet.gurly"'),
+  ('facebookUrl',      '"https://www.facebook.com/share/1DYjDCmeen/?mibextid=wwXIfr"'),
+  ('tiktokUrl',        '"https://www.tiktok.com/@your.fav.crochet.gurly?_r=1&_t=ZS-99NMdUnCZWP"'),
+  ('tiktokHandle',     '"@your.fav.crochet.gurly"'),
+  ('adminPin',         '"109212"'),
+  ('currency',         '"EGP"')
+ON CONFLICT(key) DO UPDATE SET value = excluded.value;
+
+-- The WhatsApp number is retired: never keep it in the settings table.
+DELETE FROM settings WHERE key IN ('whatsappNumber', 'whatsappDisplay', 'phone');

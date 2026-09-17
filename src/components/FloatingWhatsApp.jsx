@@ -3,14 +3,14 @@ import { useStore } from '../context/StoreContext';
 import { MessageCircle } from 'lucide-react';
 
 export const FloatingWhatsApp = () => {
-  const { getWhatsAppDirectUrl, settings } = useStore();
+  const { getWhatsAppDirectUrl, whatsappHandle } = useStore();
 
   return (
     <aside aria-label="WhatsApp quick chat" className="fixed bottom-6 right-6 z-40 flex items-center group">
       
       {/* Tooltip on hover */}
       <div className="hidden sm:block mr-3 bg-white/95 text-slate-900 text-xs font-black px-3.5 py-1.5 rounded-full shadow-lg border border-yellow-200 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0 pointer-events-none whitespace-nowrap">
-        <span>Chat on WhatsApp: {settings.whatsappDisplay} 🪿</span>
+        <span>Chat on WhatsApp: {whatsappHandle} 🪿</span>
       </div>
 
       {/* Floating Button */}

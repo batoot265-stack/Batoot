@@ -3,7 +3,7 @@ import { useStore } from '../context/StoreContext';
 import { Palette, Sparkles, Send, Heart, Clock, Truck, ShieldCheck, X } from 'lucide-react';
 
 export const CustomOrderSection = () => {
-  const { isCustomModalOpen, setIsCustomModalOpen, generateWhatsAppCustomRequestUrl, recordCustomRequest, showToast, settings } = useStore();
+  const { isCustomModalOpen, setIsCustomModalOpen, generateWhatsAppCustomRequestUrl, recordCustomRequest, showToast, whatsappHandle } = useStore();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -175,7 +175,7 @@ export const CustomOrderSection = () => {
         className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 text-yellow-950 font-black text-sm shadow-md hover:brightness-105 active:scale-95 transition-all flex items-center justify-center gap-2 border border-yellow-300"
       >
         <Send className="w-4 h-4" />
-        <span>{isSubmitting ? 'Opening WhatsApp...' : 'Send Custom Request via WhatsApp (01093536058)'}</span>
+        <span>{isSubmitting ? 'Opening WhatsApp...' : `Send Custom Request via WhatsApp (${whatsappHandle})`}</span>
       </button>
     </form>
   );
@@ -245,7 +245,7 @@ export const CustomOrderSection = () => {
                   <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
                     <span>✨ Custom Request Form</span>
                   </h3>
-                  <span className="text-[11px] font-bold text-yellow-800">Direct to WhatsApp: {settings.whatsappDisplay}</span>
+                  <span className="text-[11px] font-bold text-yellow-800">Direct to WhatsApp: {whatsappHandle}</span>
                 </div>
 
                 {renderFormContent()}
@@ -279,7 +279,7 @@ export const CustomOrderSection = () => {
             </div>
 
             <p className="text-xs text-slate-500 mb-6">
-              Let us know what you want to create! We'll prepare a tailored quote and connect with you on WhatsApp at <strong>{settings.whatsappDisplay}</strong>.
+              Let us know what you want to create! We'll prepare a tailored quote and connect with you on WhatsApp at <strong>{whatsappHandle}</strong>.
             </p>
 
             {renderFormContent()}

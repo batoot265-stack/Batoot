@@ -10,7 +10,7 @@ const TikTokIcon = ({ className = "w-5 h-5" }) => (
 );
 
 export const SocialsAndContact = () => {
-  const { settings, getWhatsAppDirectUrl } = useStore();
+  const { getWhatsAppDirectUrl, whatsappHandle, whatsappLink } = useStore();
   const [quickMsg, setQuickMsg] = useState('');
 
   const handleSendQuickMsg = (e) => {
@@ -50,7 +50,7 @@ export const SocialsAndContact = () => {
             
             {/* 1. Official WhatsApp Card */}
             <a
-              href={`https://wa.me/20${settings.whatsappNumber.replace(/^0+/, '')}`}
+              href={whatsappLink}
               target="_blank"
               rel="noreferrer"
               className="p-5 rounded-3xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-lg hover:shadow-emerald-200 hover:-translate-y-1 transition-all flex flex-col justify-between group"
@@ -66,7 +66,7 @@ export const SocialsAndContact = () => {
               </div>
 
               <div className="mt-4 pt-3 border-t border-emerald-400/50 flex items-center justify-between font-mono font-black text-sm">
-                <span>{settings.whatsappDisplay}</span>
+                <span>{whatsappHandle}</span>
                 <span className="text-xs font-sans bg-white/20 px-2 py-0.5 rounded-full flex items-center gap-1">
                   Chat Now <ExternalLink className="w-3 h-3" />
                 </span>
@@ -161,7 +161,7 @@ export const SocialsAndContact = () => {
                 <h3 className="text-xl font-black text-slate-900">Direct Chat with Batoot</h3>
               </div>
               <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                Type your message below to start an instant WhatsApp conversation with our crochet artisan on <strong>{settings.whatsappDisplay}</strong>.
+                Type your message below to start an instant WhatsApp conversation with our crochet artisan on <strong>{whatsappHandle}</strong>.
               </p>
 
               <form onSubmit={handleSendQuickMsg} className="space-y-3">
@@ -179,7 +179,7 @@ export const SocialsAndContact = () => {
                   className="w-full py-3.5 px-6 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 active:scale-95"
                 >
                   <Send className="w-4 h-4" />
-                  <span>Send to WhatsApp (01093536058) 💬</span>
+                  <span>Send to WhatsApp {whatsappHandle} 💬</span>
                 </button>
               </form>
             </div>

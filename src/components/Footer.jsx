@@ -1,6 +1,6 @@
 import React from 'react';
 import { useStore } from '../context/StoreContext';
-import { Heart, Phone, Instagram, Facebook, Shield, Truck, Sparkles, ExternalLink } from 'lucide-react';
+import { Heart, MessageCircle, Instagram, Facebook, Shield, Truck, Sparkles, ExternalLink } from 'lucide-react';
 
 const TikTokIcon = ({ className = "w-4 h-4" }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
@@ -9,7 +9,7 @@ const TikTokIcon = ({ className = "w-4 h-4" }) => (
 );
 
 export const Footer = ({ onNavigate }) => {
-  const { settings, setIsCustomModalOpen, setIsAdminModalOpen, getWhatsAppDirectUrl } = useStore();
+  const { settings, setIsCustomModalOpen, setIsAdminModalOpen, whatsappHandle, whatsappLink } = useStore();
 
   const handleNav = (id) => {
     if (onNavigate) {
@@ -83,14 +83,14 @@ export const Footer = ({ onNavigate }) => {
               </a>
 
               <a
-                href={`https://wa.me/20${settings.whatsappNumber.replace(/^0+/, '')}`}
+                href={whatsappLink}
                 target="_blank"
                 rel="noreferrer"
                 className="w-10 h-10 rounded-xl bg-yellow-900/60 hover:bg-emerald-500 text-yellow-200 hover:text-white flex items-center justify-center transition-all shadow-xs"
-                title="Chat on WhatsApp (01093536058)"
+                title={`Chat on WhatsApp (${whatsappHandle})`}
                 aria-label="WhatsApp"
               >
-                <Phone className="w-5 h-5" />
+                <MessageCircle className="w-5 h-5" />
               </a>
             </div>
           </div>
@@ -139,17 +139,17 @@ export const Footer = ({ onNavigate }) => {
               <p className="flex items-center gap-2">
                 <span className="text-yellow-400 font-bold">WhatsApp:</span>
                 <a 
-                  href={`https://wa.me/20${settings.whatsappNumber.replace(/^0+/, '')}`} 
+                  href={whatsappLink} 
                   target="_blank" 
                   rel="noreferrer" 
                   className="font-mono font-bold text-white hover:text-yellow-300 underline"
                 >
-                  {settings.whatsappDisplay}
+                  {whatsappHandle}
                 </a>
               </p>
               <p className="flex items-center gap-2">
-                <span className="text-yellow-400 font-bold">Direct Phone:</span>
-                <span className="font-mono text-white">{settings.phone}</span>
+                <span className="text-yellow-400 font-bold">Reply time:</span>
+                <span className="font-mono text-white">Usually within an hour 💛</span>
               </p>
             </div>
 
