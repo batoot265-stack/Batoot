@@ -78,6 +78,8 @@ export const AdminPortal = () => {
     newPin: ''
   });
 
+  const [isUploading, setIsUploading] = useState(false);
+
   if (!isAdminModalOpen) return null;
 
   const handleLogin = (e) => {
@@ -175,8 +177,6 @@ export const AdminPortal = () => {
     });
     setActiveTab('add');
   };
-
-  const [isUploading, setIsUploading] = useState(false);
 
   const handleImageFiles = async (fileList) => {
     if (!fileList || fileList.length === 0) return;
