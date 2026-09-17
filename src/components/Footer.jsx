@@ -129,7 +129,7 @@ export const Footer = ({ onNavigate }) => {
             </ul>
           </div>
 
-          {/* Contact & Free Shipping Highlight */}
+          {/* Contact Highlight */}
           <div className="lg:col-span-4 space-y-3">
             <h4 className="text-xs font-black uppercase tracking-widest text-yellow-400">
               Contact & Orders
@@ -150,10 +150,6 @@ export const Footer = ({ onNavigate }) => {
               <p className="flex items-center gap-2">
                 <span className="text-yellow-400 font-bold">Direct Phone:</span>
                 <span className="font-mono text-white">{settings.phone}</span>
-              </p>
-              <p className="flex items-center gap-2">
-                <span className="text-yellow-400 font-bold">Shipping:</span>
-                <span className="text-emerald-400 font-bold">FREE SHIPPING Nationwide 🚚</span>
               </p>
             </div>
 

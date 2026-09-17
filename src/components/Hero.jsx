@@ -29,8 +29,6 @@ export const Hero = () => {
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-200/80 border border-yellow-300 text-yellow-900 text-xs sm:text-sm font-bold shadow-sm animate-pulse-subtle">
               <span className="text-lg">🪿</span>
               <span>100% Artisan Handmade Crochet</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-yellow-600"></span>
-              <span className="text-yellow-800 font-extrabold">Free Shipping Always</span>
             </div>
 
             {/* Main Headline */}
@@ -82,8 +80,8 @@ export const Hero = () => {
                   <Truck className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="text-xs font-black text-slate-900">Free Shipping</p>
-                  <p className="text-[10px] text-slate-500">All orders nationwide</p>
+                  <p className="text-xs font-black text-slate-900">Nationwide Delivery</p>
+                  <p className="text-[10px] text-slate-500">Shipped to your door</p>
                 </div>
               </div>
 
@@ -144,14 +142,14 @@ export const Hero = () => {
                   </div>
 
                   <div className="absolute top-3 right-3 bg-yellow-400 text-yellow-950 text-xs font-black px-3 py-1.5 rounded-full shadow-md">
-                    FREE DELIVERY 🚚
+                    HANDMADE 🧶
                   </div>
 
                   {/* Bottom Image Overlay Card */}
                   <div className="absolute bottom-3 inset-x-3 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-yellow-200 shadow-lg flex items-center justify-between">
                     <div>
                       <h4 className="text-xs font-extrabold text-slate-900">A Lily Flower 🌺</h4>
-                      <p className="text-[11px] font-semibold text-yellow-700">490 EGP • Free Shipping</p>
+                      <p className="text-[11px] font-semibold text-yellow-700">490 EGP • Handmade 🧶</p>
                     </div>
                     {heroLily && (
                       <button

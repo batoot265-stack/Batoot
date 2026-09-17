@@ -328,7 +328,12 @@ export const StoreProvider = ({ children }) => {
 
   // Admin Auth
   const loginAdmin = (pin) => {
-    if (pin === settings.adminPin || pin === '1234' || pin === 'batoot2026') {
+    // Old default PINs that may still be stored from earlier versions are ignored.
+    const legacyPins = ['1234', 'batoot2026'];
+    const validPin = settings.adminPin && !legacyPins.includes(settings.adminPin)
+      ? settings.adminPin
+      : '109212';
+    if (pin === validPin) {
       setIsAdminLoggedIn(true);
       try {
         sessionStorage.setItem('batoot_admin_auth', 'true');
@@ -374,7 +379,6 @@ export const StoreProvider = ({ children }) => {
     });
 
     message += `━━━━━━━━━━━━━━━━━━━━━━\n`;
-    message += `🚚 *Shipping:* FREE SHIPPING (0 EGP) ✨\n`;
     message += `💰 *Total Amount:* *${total} EGP*\n`;
     message += `━━━━━━━━━━━━━━━━━━━━━━\n`;
     message += `✨ Hello Batoot! I would like to confirm my handmade crochet order above. Please let me know the preparation time and payment confirmation! 🪿💛`;
