@@ -292,6 +292,10 @@ export const StoreProvider = ({ children }) => {
     const productWithId = {
       ...newProduct,
       id: 'prod-' + Date.now(),
+      image: newProduct.image || newProduct.gallery?.[0] || null,
+      gallery: Array.isArray(newProduct.gallery)
+        ? newProduct.gallery
+        : (newProduct.image ? [newProduct.image] : []),
       rating: 5.0,
       reviewsCount: 1,
       inStock: newProduct.inStock !== false

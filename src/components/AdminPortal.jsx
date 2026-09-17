@@ -25,12 +25,19 @@ import {
   ExternalLink
 } from 'lucide-react';
 
+const uniqueImages = (images = []) => [...new Set(
+  images
+    .filter(image => typeof image === 'string' && image.trim())
+    .map(image => image.trim())
+)];
+
 const createEmptyProductForm = () => ({
   name: '',
   category: 'Amigurumi & Plushies',
   price: '',
   originalPrice: '',
   image: '',
+  gallery: [],
   badge: 'New ✨',
   inStock: true,
   shortDescription: '',
@@ -68,6 +75,7 @@ export const AdminPortal = () => {
 
   // New Product Form State
   const [productForm, setProductForm] = useState(createEmptyProductForm);
+  const [galleryUrlInput, setGalleryUrlInput] = useState('');
   const [isImageProcessing, setIsImageProcessing] = useState(false);
   const imageInputRef = useRef(null);
 
@@ -92,26 +100,69 @@ export const AdminPortal = () => {
     }
   };
 
+  const addImagesToGallery = (images, makeFirstImageMain = false) => {
+    const incomingImages = uniqueImages(images);
+    if (!incomingImages.length) return;
+
+    setProductForm(prev => {
+      const gallery = uniqueImages([...(prev.gallery || []), ...incomingImages]);
+      const image = makeFirstImageMain || !prev.image
+        ? incomingImages[0]
+        : prev.image;
+      return { ...prev, image, gallery: uniqueImages([image, ...gallery]) };
+    });
+  };
+
   const handleImageUpload = async (e) => {
-    const file = e.target.files?.[0];
+    const files = Array.from(e.target.files || []);
     e.target.value = '';
-    if (!file) return;
+    if (!files.length) return;
 
     setIsImageProcessing(true);
     try {
-      const imageDataUrl = await imageFileToDataUrl(file);
-      setProductForm(prev => ({ ...prev, image: imageDataUrl }));
-      showToast('Product image uploaded and ready to save! 🖼️');
+      const uploadedImages = await Promise.all(files.map(imageFileToDataUrl));
+      addImagesToGallery(uploadedImages);
+      showToast(`${uploadedImages.length} product image${uploadedImages.length === 1 ? '' : 's'} added! 🖼️`);
     } catch (error) {
-      showToast(error.message || 'Could not upload this image.', 'error');
+      showToast(error.message || 'Could not upload these images.', 'error');
     } finally {
       setIsImageProcessing(false);
     }
   };
 
-  const removeProductImage = () => {
-    setProductForm(prev => ({ ...prev, image: '' }));
-    showToast('Product image removed. Save the product to apply the change.', 'info');
+  const addGalleryUrl = () => {
+    const imageUrl = galleryUrlInput.trim();
+    if (!imageUrl) {
+      showToast('Paste an image URL first.', 'error');
+      return;
+    }
+    addImagesToGallery([imageUrl]);
+    setGalleryUrlInput('');
+    showToast('Image added to the gallery! 🖼️');
+  };
+
+  const setMainProductImage = (image) => {
+    setProductForm(prev => ({
+      ...prev,
+      image,
+      gallery: uniqueImages([image, ...(prev.gallery || [])])
+    }));
+  };
+
+  const removeGalleryImage = (imageToRemove) => {
+    setProductForm(prev => {
+      const gallery = (prev.gallery || []).filter(image => image !== imageToRemove);
+      const remainingImages = uniqueImages(gallery.filter(image => image !== prev.image));
+      const image = prev.image === imageToRemove
+        ? (remainingImages[0] || '')
+        : prev.image;
+      return {
+        ...prev,
+        image,
+        gallery: uniqueImages([image, ...remainingImages])
+      };
+    });
+    showToast('Image removed. Save the product to apply the change.', 'info');
   };
 
   const handleCreateOrUpdateProduct = (e) => {
@@ -125,12 +176,19 @@ export const AdminPortal = () => {
       ? productForm.colorsText.split(',').map(c => c.trim()).filter(Boolean)
       : ['Standard'];
 
+    const galleryImages = uniqueImages([productForm.image, ...(productForm.gallery || [])]);
+    const mainImage = productForm.image.trim() || galleryImages[0] || null;
+    const orderedGallery = mainImage
+      ? uniqueImages([mainImage, ...galleryImages])
+      : galleryImages;
+
     const productPayload = {
       name: productForm.name,
       category: productForm.category,
       price: Number(productForm.price),
       originalPrice: productForm.originalPrice ? Number(productForm.originalPrice) : null,
-      image: productForm.image.trim() || null,
+      image: mainImage,
+      gallery: orderedGallery,
       badge: productForm.badge,
       inStock: productForm.inStock,
       shortDescription: productForm.shortDescription,
@@ -150,18 +208,22 @@ export const AdminPortal = () => {
 
     // Reset Form
     setProductForm(createEmptyProductForm());
+    setGalleryUrlInput('');
 
     setActiveTab('inventory');
   };
 
   const startEditProduct = (prod) => {
+    const gallery = uniqueImages([prod.image, ...(prod.gallery || [])]);
     setEditingProduct(prod);
+    setGalleryUrlInput('');
     setProductForm({
       name: prod.name,
       category: prod.category,
       price: prod.price,
       originalPrice: prod.originalPrice || '',
-      image: prod.image || '',
+      image: prod.image || gallery[0] || '',
+      gallery,
       badge: prod.badge || '',
       inStock: prod.inStock !== false,
       shortDescription: prod.shortDescription || '',
@@ -210,6 +272,8 @@ export const AdminPortal = () => {
     { label: 'Spider Tapestry 🕸️', path: '/images/products/spiderman-tapestry.jpg' },
     { label: 'Hero Studio 🌺', path: '/images/batoot-hero.jpg' }
   ];
+
+  const formGalleryImages = uniqueImages([productForm.image, ...(productForm.gallery || [])]);
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 animate-fadeIn">
@@ -319,6 +383,7 @@ export const AdminPortal = () => {
                   setActiveTab('add');
                   if (!editingProduct) {
                     setProductForm(createEmptyProductForm());
+                    setGalleryUrlInput('');
                   }
                 }}
                 className={`py-3 px-3.5 text-xs font-black whitespace-nowrap border-b-2 transition-all flex items-center gap-1.5 ${
@@ -587,25 +652,25 @@ export const AdminPortal = () => {
                   </div>
                 </div>
 
-                {/* Image Selection */}
-                <div className="space-y-2">
+                {/* Image Gallery */}
+                <div className="space-y-3">
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <label className="block text-xs font-bold text-slate-800">
-                        Product Image (صورة المنتج)
+                        Product Images (صور المنتج)
                       </label>
                       <p className="text-[10px] text-slate-500 mt-0.5">
-                        Upload from your device, paste an image URL, or choose a preset.
+                        Add multiple images. Click any thumbnail to make it the main image shown on the product card.
                       </p>
                     </div>
                     {productForm.image && (
                       <button
                         type="button"
-                        onClick={removeProductImage}
+                        onClick={() => removeGalleryImage(productForm.image)}
                         className="shrink-0 px-2.5 py-1.5 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 text-[11px] font-bold flex items-center gap-1"
                       >
                         <ImageOff className="w-3.5 h-3.5" />
-                        Remove image
+                        Remove main
                       </button>
                     )}
                   </div>
@@ -613,7 +678,7 @@ export const AdminPortal = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] gap-2 items-start">
                     <input
                       type="text"
-                      placeholder="https://... image URL"
+                      placeholder="Main image URL: https://..."
                       value={isDataImage(productForm.image) ? '' : productForm.image}
                       onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
                       className="w-full px-3 py-2 text-xs rounded-xl border border-yellow-200 bg-yellow-50/40 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-slate-800 font-mono"
@@ -625,58 +690,105 @@ export const AdminPortal = () => {
                       className="px-3 py-2 rounded-xl bg-yellow-100 hover:bg-yellow-200 disabled:opacity-60 text-yellow-950 border border-yellow-300 text-xs font-black flex items-center justify-center gap-1.5 whitespace-nowrap"
                     >
                       <Upload className="w-3.5 h-3.5" />
-                      {isImageProcessing ? 'Processing...' : 'Upload image'}
+                      {isImageProcessing ? 'Processing...' : 'Upload images'}
                     </button>
                     <input
                       ref={imageInputRef}
                       type="file"
                       accept="image/*"
+                      multiple
                       onChange={handleImageUpload}
                       className="hidden"
                     />
                   </div>
 
-                  <div className="flex flex-col sm:flex-row gap-3 p-2.5 rounded-xl bg-yellow-50/60 border border-yellow-200">
-                    <div className="w-24 h-24 rounded-lg overflow-hidden bg-white border border-yellow-200 shrink-0 flex items-center justify-center">
-                      {productForm.image ? (
-                        <img
-                          src={productForm.image}
-                          alt="Product preview"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="text-center text-slate-400 px-2">
-                          <ImageIcon className="w-6 h-6 mx-auto mb-1" />
-                          <span className="text-[10px] font-bold">No image</span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="text-[11px] text-slate-600 leading-relaxed">
-                      <p className="font-black text-slate-800 mb-1">
-                        {productForm.image
-                          ? (isDataImage(productForm.image) ? 'Uploaded image ready' : 'Image selected')
-                          : 'No image selected'}
+                  <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] gap-2 items-start">
+                    <input
+                      type="text"
+                      placeholder="Add another image URL to the gallery"
+                      value={galleryUrlInput}
+                      onChange={(e) => setGalleryUrlInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          addGalleryUrl();
+                        }
+                      }}
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-yellow-200 bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400 text-slate-800 font-mono"
+                    />
+                    <button
+                      type="button"
+                      onClick={addGalleryUrl}
+                      className="px-3 py-2 rounded-xl bg-white hover:bg-yellow-50 text-yellow-950 border border-yellow-300 text-xs font-black flex items-center justify-center gap-1.5 whitespace-nowrap"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      Add image URL
+                    </button>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-yellow-50/60 border border-yellow-200">
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <p className="text-[11px] font-black text-slate-800">
+                        Gallery ({formGalleryImages.length} image{formGalleryImages.length === 1 ? '' : 's'})
                       </p>
-                      <p>
-                        {productForm.image
-                          ? 'Save the product to publish this image. You can replace it at any time.'
-                          : 'You can save without an image and add one later from Edit Product.'}
-                      </p>
+                      <p className="text-[10px] text-slate-500">Click a thumbnail to set it as main</p>
                     </div>
+
+                    {formGalleryImages.length > 0 ? (
+                      <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                        {formGalleryImages.map((image, index) => (
+                          <div key={`${image}-${index}`} className="relative group">
+                            <button
+                              type="button"
+                              onClick={() => setMainProductImage(image)}
+                              className={`w-full aspect-square rounded-lg overflow-hidden bg-white border-2 transition-all ${
+                                productForm.image === image
+                                  ? 'border-yellow-500 ring-2 ring-yellow-300'
+                                  : 'border-yellow-200 hover:border-yellow-400'
+                              }`}
+                              title={productForm.image === image ? 'Main product image' : 'Make this the main image'}
+                            >
+                              <img src={image} alt={`Product gallery ${index + 1}`} className="w-full h-full object-cover" />
+                            </button>
+                            {productForm.image === image && (
+                              <span className="absolute left-1 bottom-1 bg-yellow-400 text-yellow-950 text-[9px] font-black px-1.5 py-0.5 rounded-md">
+                                MAIN
+                              </span>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => removeGalleryImage(image)}
+                              className="absolute top-1 right-1 w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center opacity-90 hover:opacity-100 shadow-sm"
+                              title="Remove this image"
+                              aria-label="Remove this image"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="py-6 text-center text-slate-400">
+                        <ImageIcon className="w-7 h-7 mx-auto mb-1" />
+                        <p className="text-[10px] font-bold">No images added yet</p>
+                      </div>
+                    )}
                   </div>
 
                   {/* Preset Image Selector Buttons */}
                   <div className="flex flex-wrap gap-1.5">
-                    <span className="text-[11px] font-bold text-slate-500 self-center mr-1">Choose Preset:</span>
+                    <span className="text-[11px] font-bold text-slate-500 self-center mr-1">Add preset:</span>
                     {imagePresets.map(preset => (
                       <button
                         key={preset.path}
                         type="button"
-                        onClick={() => setProductForm({ ...productForm, image: preset.path })}
+                        onClick={() => addImagesToGallery([preset.path])}
                         className={`text-[11px] font-bold px-2.5 py-1 rounded-lg border transition-all ${
                           productForm.image === preset.path
                             ? 'bg-yellow-400 text-yellow-950 border-yellow-500'
-                            : 'bg-white text-slate-700 border-yellow-200 hover:bg-yellow-50'
+                            : formGalleryImages.includes(preset.path)
+                              ? 'bg-yellow-100 text-yellow-900 border-yellow-300'
+                              : 'bg-white text-slate-700 border-yellow-200 hover:bg-yellow-50'
                         }`}
                       >
                         {preset.label}

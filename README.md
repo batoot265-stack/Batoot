@@ -86,7 +86,7 @@ falls back to the bundled catalog and localStorage, so the site never breaks.
 
 5. **Admin Portal 🔒**:
    - Passcode protected with the store admin PIN.
-   - Add/Edit products, upload or replace product images, remove images, 1-click stock status toggle (In Stock / Sold Out), and delete items.
+   - Add/Edit products, upload multiple gallery images, replace or remove images, choose a main image, 1-click stock status toggle (In Stock / Sold Out), and delete items.
    - View recent customer orders and custom inquiries.
    - Update WhatsApp hotline number and social accounts.
 
