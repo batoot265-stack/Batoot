@@ -231,16 +231,12 @@ export const CustomOrderSection = () => {
                       3
                     </div>
                     <div>
-                      <p className="text-xs font-extrabold text-slate-900">Hooked with Love & Free Shipping</p>
+                      <p className="text-xs font-extrabold text-slate-900">Hooked with Love & Delivered</p>
                       <p className="text-[11px] text-slate-500">Your bespoke creation is carefully handmade and shipped to your door.</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-2 text-xs font-bold text-yellow-800 flex items-center gap-2">
-                  <Truck className="w-4 h-4 text-yellow-600" />
-                  <span>Free shipping applies to custom orders too! ✨</span>
-                </div>
               </div>
 
               {/* Right Column: Interactive Form */}

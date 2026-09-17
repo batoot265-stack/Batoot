@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useStore } from '../context/StoreContext';
 import { categoriesList } from '../data/initialProducts';
+import { filesToDataUrls, totalDataUrlBytes, MAX_TOTAL_IMAGE_BYTES } from '../lib/imageUpload';
 import { 
   X, 
   Lock, 
@@ -19,7 +20,9 @@ import {
   Layers,
   RotateCcw,
   Sparkles,
-  ExternalLink
+  ExternalLink,
+  Upload,
+  Star
 } from 'lucide-react';
 
 export const AdminPortal = () => {
@@ -53,7 +56,7 @@ export const AdminPortal = () => {
     category: 'Amigurumi & Plushies',
     price: '',
     originalPrice: '',
-    image: '/images/products/batoot-goose.jpg',
+    images: [],
     badge: 'New ✨',
     inStock: true,
     shortDescription: '',
@@ -71,7 +74,7 @@ export const AdminPortal = () => {
     instagramUrl: settings.instagramUrl || 'https://www.instagram.com/your.fav.crochet.gurly?igsh=Z3c2Nmd0Z2k5azNx',
     facebookUrl: settings.facebookUrl || 'https://www.facebook.com/share/1DYjDCmeen/?mibextid=wwXIfr',
     tiktokUrl: settings.tiktokUrl || 'https://www.tiktok.com/@your.fav.crochet.gurly?_r=1&_t=ZS-99NMdUnCZWP',
-    announcementText: settings.announcementText || '🚚 FREE SHIPPING ON ALL ORDERS ✨ • 100% HANDMADE WITH LOVE 🪿 • FAST DIRECT WHATSAPP CHECKOUT 💬',
+    announcementText: settings.announcementText || '✨ 100% HANDMADE WITH LOVE 🪿 • FAST DIRECT WHATSAPP CHECKOUT 💬',
     newPin: ''
   });
 
@@ -91,6 +94,10 @@ export const AdminPortal = () => {
       showToast("Please fill in the product name and price.", "error");
       return;
     }
+    if (productForm.images.length === 0) {
+      showToast("Please add at least one product image from your device. 📸", "error");
+      return;
+    }
 
     const colorsArray = productForm.colorsText
       ? productForm.colorsText.split(',').map(c => c.trim()).filter(Boolean)
@@ -101,7 +108,8 @@ export const AdminPortal = () => {
       category: productForm.category,
       price: Number(productForm.price),
       originalPrice: productForm.originalPrice ? Number(productForm.originalPrice) : null,
-      image: productForm.image || '/images/products/batoot-goose.jpg',
+      image: productForm.images[0] || '/images/products/batoot-goose.jpg',
+      gallery: productForm.images,
       badge: productForm.badge,
       inStock: productForm.inStock,
       shortDescription: productForm.shortDescription,
@@ -113,6 +121,11 @@ export const AdminPortal = () => {
     };
 
     if (editingProduct) {
+      // Drop color-image links that point to images no longer in the gallery
+      const oldColorImages = editingProduct.colorImages || {};
+      productPayload.colorImages = Object.fromEntries(
+        Object.entries(oldColorImages).filter(([, img]) => productForm.images.includes(img))
+      );
       updateProduct(editingProduct.id, productPayload);
       setEditingProduct(null);
     } else {
@@ -125,7 +138,7 @@ export const AdminPortal = () => {
       category: 'Amigurumi & Plushies',
       price: '',
       originalPrice: '',
-      image: '/images/products/batoot-goose.jpg',
+      images: [],
       badge: 'New ✨',
       inStock: true,
       shortDescription: '',
@@ -146,7 +159,11 @@ export const AdminPortal = () => {
       category: prod.category,
       price: prod.price,
       originalPrice: prod.originalPrice || '',
-      image: prod.image,
+      images: (() => {
+        const g = Array.isArray(prod.gallery) && prod.gallery.length ? [...prod.gallery] : [];
+        if (prod.image && !g.includes(prod.image)) g.unshift(prod.image);
+        return g;
+      })(),
       badge: prod.badge || '',
       inStock: prod.inStock !== false,
       shortDescription: prod.shortDescription || '',
@@ -157,6 +174,39 @@ export const AdminPortal = () => {
       colorsText: (prod.colors || []).join(', ')
     });
     setActiveTab('add');
+  };
+
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleImageFiles = async (fileList) => {
+    if (!fileList || fileList.length === 0) return;
+    setIsUploading(true);
+    try {
+      const urls = await filesToDataUrls(fileList);
+      const combined = [...productForm.images, ...urls];
+      if (totalDataUrlBytes(combined) > MAX_TOTAL_IMAGE_BYTES) {
+        showToast('Too many / too large images for one product. Try fewer images (max ~8). 📸', 'error');
+        return;
+      }
+      setProductForm(prev => ({ ...prev, images: combined }));
+      showToast(`${urls.length} image${urls.length > 1 ? 's' : ''} added 📸`);
+    } catch (e) {
+      showToast(e.message || 'Could not load image', 'error');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const removeImage = (idx) => {
+    setProductForm(prev => ({ ...prev, images: prev.images.filter((_, i) => i !== idx) }));
+  };
+
+  const makeMainImage = (idx) => {
+    setProductForm(prev => {
+      const imgs = [...prev.images];
+      const [picked] = imgs.splice(idx, 1);
+      return { ...prev, images: [picked, ...imgs] };
+    });
   };
 
   const handleSaveSettings = (e) => {
@@ -175,26 +225,6 @@ export const AdminPortal = () => {
     updateSettings(updated);
     showToast("Settings updated successfully! 💛");
   };
-
-  // Image presets available in public images
-  const imagePresets = [
-    { label: 'Lily Flower 🌺', path: '/images/products/lily-flower.jpg' },
-    { label: 'Tiny Hero 🕷️', path: '/images/products/spiderman-doll.jpg' },
-    { label: 'Lavender Coaster 🪻', path: '/images/products/lavender-coaster.jpg' },
-    { label: 'Yellow Duck 🦆', path: '/images/products/duck-bonnet-yellow.jpg' },
-    { label: 'White Duck 🦆', path: '/images/products/duck-bonnet-white.jpg' },
-    { label: 'Ducks Pair 🦆🦆', path: '/images/products/duck-bonnet-pair.jpg' },
-    { label: 'Yellow Star ⭐️', path: '/images/products/star-yellow.jpg' },
-    { label: 'Blue Star ⭐️', path: '/images/products/star-blue.jpg' },
-    { label: 'Crescent Moon 🌙', path: '/images/products/crescent-moon.jpg' },
-    { label: 'Mini Whale 🐋', path: '/images/products/mini-whale.jpg' },
-    { label: 'Coquette Bow 🎀', path: '/images/products/coquette-bow.jpg' },
-    { label: 'Red Pepper 🌶️', path: '/images/products/pepper-red.jpg' },
-    { label: 'Green Pepper 🫑', path: '/images/products/pepper-green.jpg' },
-    { label: 'Yellow Pepper 🟡', path: '/images/products/pepper-yellow.jpg' },
-    { label: 'Spider Tapestry 🕸️', path: '/images/products/spiderman-tapestry.jpg' },
-    { label: 'Hero Studio 🌺', path: '/images/batoot-hero.jpg' }
-  ];
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 animate-fadeIn">
@@ -261,7 +291,7 @@ export const AdminPortal = () => {
               <div>
                 <input
                   type="password"
-                  placeholder="Enter PIN (Default: 1234)"
+                  placeholder="Enter admin PIN"
                   value={pinInput}
                   onChange={(e) => setPinInput(e.target.value)}
                   className="w-full px-4 py-3 text-center text-lg tracking-widest font-black rounded-2xl border-2 border-yellow-300 bg-yellow-50/50 focus:outline-none focus:ring-4 focus:ring-yellow-300 text-slate-900"
@@ -276,10 +306,6 @@ export const AdminPortal = () => {
                 Unlock Admin Dashboard 🔓
               </button>
             </form>
-
-            <p className="text-[11px] text-slate-400">
-              💡 Hint for store owner: Default passcode is <strong>1234</strong>
-            </p>
           </div>
         ) : (
           /* LOGGED IN ADMIN DASHBOARD VIEW */
@@ -308,7 +334,7 @@ export const AdminPortal = () => {
                       category: 'Amigurumi & Plushies',
                       price: '',
                       originalPrice: '',
-                      image: '/images/products/batoot-goose.jpg',
+                      images: [],
                       badge: 'New ✨',
                       inStock: true,
                       shortDescription: '',
@@ -582,37 +608,76 @@ export const AdminPortal = () => {
                   </div>
                 </div>
 
-                {/* Image Selection */}
+                {/* Image Upload from device */}
                 <div>
                   <label className="block text-xs font-bold text-slate-800 mb-1">
-                    Product Image URL / Preset (صورة المنتج)
+                    Product Images (صور المنتج من جهازك) <span className="text-rose-500">*</span>
                   </label>
-                  <input
-                    type="text"
-                    placeholder="Image URL or choose preset below"
-                    value={productForm.image}
-                    onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-yellow-200 bg-yellow-50/40 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-slate-800 mb-2 font-mono"
-                  />
+                  <p className="text-[11px] text-slate-500 mb-2">
+                    اختار صورة أو أكتر من الجهاز. أول صورة هي الصورة الرئيسية للمنتج — اضغط ⭐ لتغييرها أو ✕ لحذف أي صورة.
+                  </p>
 
-                  {/* Preset Image Selector Buttons */}
-                  <div className="flex flex-wrap gap-1.5">
-                    <span className="text-[11px] font-bold text-slate-500 self-center mr-1">Choose Preset:</span>
-                    {imagePresets.map(preset => (
-                      <button
-                        key={preset.path}
-                        type="button"
-                        onClick={() => setProductForm({ ...productForm, image: preset.path })}
-                        className={`text-[11px] font-bold px-2.5 py-1 rounded-lg border transition-all ${
-                          productForm.image === preset.path
-                            ? 'bg-yellow-400 text-yellow-950 border-yellow-500'
-                            : 'bg-white text-slate-700 border-yellow-200 hover:bg-yellow-50'
-                        }`}
-                      >
-                        {preset.label}
-                      </button>
-                    ))}
-                  </div>
+                  <label
+                    className={`flex flex-col items-center justify-center gap-1.5 w-full px-4 py-5 rounded-2xl border-2 border-dashed cursor-pointer transition-colors ${
+                      isUploading ? 'border-yellow-300 bg-yellow-50 opacity-70' : 'border-yellow-300 bg-yellow-50/50 hover:bg-yellow-100'
+                    }`}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => { e.preventDefault(); handleImageFiles(e.dataTransfer.files); }}
+                  >
+                    <Upload className="w-6 h-6 text-yellow-700" />
+                    <span className="text-xs font-black text-yellow-900">
+                      {isUploading ? 'Loading images…' : 'Click to choose images from your device (or drag & drop)'}
+                    </span>
+                    <span className="text-[10px] text-slate-500">JPG, PNG, WEBP • you can select several at once</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      className="hidden"
+                      disabled={isUploading}
+                      onChange={(e) => { handleImageFiles(e.target.files); e.target.value = ''; }}
+                    />
+                  </label>
+
+                  {productForm.images.length > 0 && (
+                    <div className="mt-3 grid grid-cols-3 sm:grid-cols-5 gap-2">
+                      {productForm.images.map((img, idx) => (
+                        <div
+                          key={idx}
+                          className={`relative group aspect-square rounded-xl overflow-hidden border-2 bg-white ${
+                            idx === 0 ? 'border-yellow-500 ring-2 ring-yellow-300' : 'border-yellow-200'
+                          }`}
+                        >
+                          <img src={img} alt={`Product ${idx + 1}`} className="w-full h-full object-cover" />
+                          {idx === 0 && (
+                            <span className="absolute bottom-1 left-1 bg-yellow-400 text-yellow-950 text-[9px] font-black px-1.5 py-0.5 rounded-md shadow">
+                              Main ⭐
+                            </span>
+                          )}
+                          <div className="absolute top-1 right-1 flex gap-1">
+                            {idx !== 0 && (
+                              <button
+                                type="button"
+                                onClick={() => makeMainImage(idx)}
+                                title="Set as main image"
+                                className="p-1 rounded-md bg-white/90 text-yellow-700 hover:bg-yellow-100 shadow"
+                              >
+                                <Star className="w-3 h-3" />
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => removeImage(idx)}
+                              title="Remove image"
+                              className="p-1 rounded-md bg-white/90 text-rose-600 hover:bg-rose-100 shadow"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Stock Status Switcher */}
@@ -751,7 +816,7 @@ export const AdminPortal = () => {
 
                           <div className="flex items-center gap-2">
                             <span className="text-xs font-black text-slate-900 bg-yellow-50 px-2.5 py-1 rounded-lg border border-yellow-200">
-                              Total: {order.totalAmount} EGP (Free Shipping)
+                              Total: {order.totalAmount} EGP
                             </span>
                             <a
                               href={`https://wa.me/20${order.phone ? order.phone.replace(/^0+/, '') : ''}`}

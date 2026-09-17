@@ -7,7 +7,7 @@ export const ProductCard = ({ product }) => {
 
   const handleQuickWhatsApp = (e) => {
     e.stopPropagation();
-    const msg = `Hello Batoot! 🪿 I would love to order "${product.name}" (${product.price} EGP) with Free Shipping! Is it available? 💛`;
+    const msg = `Hello Batoot! 🪿 I would love to order "${product.name}" (${product.price} EGP). Is it available? 💛`;
     window.open(getWhatsAppDirectUrl(msg), '_blank');
   };
 
@@ -101,7 +101,7 @@ export const ProductCard = ({ product }) => {
           </p>
         </div>
 
-        {/* Price & Free Shipping */}
+        {/* Price */}
         <div className="pt-2 border-t border-yellow-100">
           <div className="flex items-baseline gap-2 mb-2">
             <span className="text-lg sm:text-xl font-black text-slate-950">
@@ -112,9 +112,6 @@ export const ProductCard = ({ product }) => {
                 {product.originalPrice} EGP
               </span>
             )}
-            <span className="ml-auto text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-md flex items-center gap-0.5">
-              <Truck className="w-3 h-3" /> Free Shipping
-            </span>
           </div>
 
           {/* Action Buttons */}

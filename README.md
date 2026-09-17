@@ -62,7 +62,6 @@ falls back to the bundled catalog and localStorage, so the site never breaks.
 
 1. **Yellow & White Cozy Aesthetic**:
    - Palette inspired by warm butter yellow, sunny gold, and crisp clean white.
-   - 100% Free Shipping announcement banner on top of every page.
    - Duck & Goose mascot branding with signature logo and cozy typography.
 
 2. **Handmade Catalog (10 Real Products)**:
@@ -78,15 +77,15 @@ falls back to the bundled catalog and localStorage, so the site never breaks.
    - **Spider-Man Tapestry & Mask 🕸️** (130 EGP) - Multipurpose decorative coaster / sleep mask.
 
 3. **Shopping Bag & WhatsApp Checkout**:
-   - Real-time cart calculations with Free Shipping (0 EGP).
+   - Real-time cart calculations.
    - Instant WhatsApp checkout redirecting to `+201093536058` (`01093536058`) with greeting, customer address, product names, and totals.
 
 4. **Custom Orders (تنفيذ خاص)**:
    - Form for custom crochet ideas, color preferences, and dimensions dispatching straight to WhatsApp.
 
 5. **Admin Portal 🔒**:
-   - Passcode protected (Default PIN: `1234` or `batoot2026`).
-   - Add/Edit products, 1-click stock status toggle (In Stock / Sold Out), and delete items.
+   - Passcode protected (PIN configurable from Store Settings).
+   - Add/Edit products with image upload straight from your device (multiple images per product, pick the main one), 1-click stock status toggle (In Stock / Sold Out), and delete items.
    - View recent customer orders and custom inquiries.
    - Update WhatsApp hotline number and social accounts.
 

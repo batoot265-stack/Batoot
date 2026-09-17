@@ -42,15 +42,15 @@ export const Navbar = ({ onNavigate }) => {
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-yellow-200/80 shadow-sm transition-all">
-      {/* Top Announcement Banner - Free Shipping Always */}
+      {/* Top Announcement Banner */}
       <div className="bg-gradient-to-r from-yellow-300 via-yellow-400 to-amber-400 text-yellow-950 font-semibold text-xs md:text-sm py-2 px-4 shadow-inner">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2 mx-auto md:mx-0 overflow-hidden text-center whitespace-nowrap">
-            <span className="inline-flex items-center gap-1.5 bg-white/80 text-yellow-900 px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm animate-pulse">
-              <Truck className="w-3.5 h-3.5" /> FREE SHIPPING
+            <span className="inline-flex items-center gap-1.5 bg-white/80 text-yellow-900 px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">
+              🪿 BATOOT
             </span>
             <span className="hidden sm:inline">✨</span>
-            <span className="font-bold tracking-tight">FREE SHIPPING ON ALL ORDERS NATIONWIDE 🪿</span>
+            <span className="font-bold tracking-tight">100% HANDMADE CROCHET WITH LOVE 🧶</span>
             <span className="hidden md:inline text-yellow-900/80">• Stitched with 100% Love & Soft Milk Cotton</span>
           </div>
 

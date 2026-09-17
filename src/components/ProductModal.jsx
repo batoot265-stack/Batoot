@@ -36,7 +36,7 @@ export const ProductModal = () => {
     msg += `• *Product:* ${selectedProduct.name}\n`;
     msg += `• *Quantity:* ${quantity}\n`;
     msg += `• *Color/Variation:* ${currentColor}\n`;
-    msg += `• *Price:* ${selectedProduct.price * quantity} EGP (Free Shipping!)\n`;
+    msg += `• *Price:* ${selectedProduct.price * quantity} EGP\n`;
     if (customNote.trim()) {
       msg += `• *Custom Request:* ${customNote.trim()}\n`;
     }
@@ -106,11 +106,6 @@ export const ProductModal = () => {
                 </div>
               )}
 
-              {/* Free Shipping Tag */}
-              <div className="p-3 bg-yellow-50 rounded-xl border border-yellow-200 flex items-center gap-2 text-xs font-bold text-yellow-950">
-                <Truck className="w-4 h-4 text-yellow-700 shrink-0" />
-                <span>Free Shipping on this order nationwide! 🚚</span>
-              </div>
             </div>
 
             {/* Right Product Details Column */}
