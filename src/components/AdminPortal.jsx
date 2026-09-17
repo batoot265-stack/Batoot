@@ -78,6 +78,12 @@ export const AdminPortal = () => {
     newPin: ''
   });
 
+  // Keep every hook above the conditional return. The portal is mounted with
+  // the modal closed, then rendered again when the admin button is clicked.
+  // Declaring this state below the return changes the hook order and crashes
+  // React with "Rendered more hooks than during the previous render".
+  const [isUploading, setIsUploading] = useState(false);
+
   if (!isAdminModalOpen) return null;
 
   const handleLogin = (e) => {
@@ -175,8 +181,6 @@ export const AdminPortal = () => {
     });
     setActiveTab('add');
   };
-
-  const [isUploading, setIsUploading] = useState(false);
 
   const handleImageFiles = async (fileList) => {
     if (!fileList || fileList.length === 0) return;
