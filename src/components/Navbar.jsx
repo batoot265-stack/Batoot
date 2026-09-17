@@ -5,7 +5,7 @@ import {
   Search, 
   Sparkles, 
   Shield, 
-  Phone, 
+  MessageCircle, 
   Menu, 
   X, 
   Heart,
@@ -22,7 +22,8 @@ export const Navbar = ({ onNavigate }) => {
     isAdminLoggedIn,
     searchQuery,
     setSearchQuery,
-    settings
+    whatsappHandle,
+    whatsappLink
   } = useStore();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -56,12 +57,12 @@ export const Navbar = ({ onNavigate }) => {
 
           <div className="hidden lg:flex items-center gap-4 text-xs font-bold">
             <a 
-              href={`https://wa.me/20${settings.whatsappNumber.replace(/^0+/, '')}`} 
+              href={whatsappLink} 
               target="_blank" 
               rel="noreferrer"
               className="flex items-center gap-1 text-yellow-950 hover:text-white transition-colors bg-black/10 hover:bg-black/20 px-2.5 py-1 rounded-full"
             >
-              <Phone className="w-3 h-3" /> WhatsApp: {settings.whatsappDisplay}
+              <MessageCircle className="w-3 h-3" /> WhatsApp: {whatsappHandle}
             </a>
           </div>
         </div>

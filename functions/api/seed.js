@@ -18,6 +18,11 @@ export async function onRequestPost({ env }) {
       Object.entries(initialSettings).map(([k, v]) => sStmt.bind(k, JSON.stringify(v)))
     );
 
+    // Purge the retired phone-number keys so no old number survives a re-seed.
+    await env.DB
+      .prepare(`DELETE FROM settings WHERE key IN ('whatsappNumber', 'whatsappDisplay', 'phone')`)
+      .run();
+
     return json({ ok: true, products: initialProducts.length });
   } catch (e) {
     return err(e.message);

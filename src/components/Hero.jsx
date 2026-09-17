@@ -3,7 +3,7 @@ import { useStore } from '../context/StoreContext';
 import { Sparkles, ArrowRight, Heart, ShieldCheck, Palette, Truck, Star } from 'lucide-react';
 
 export const Hero = () => {
-  const { setIsCustomModalOpen, setSelectedProduct, products, getWhatsAppDirectUrl } = useStore();
+  const { setIsCustomModalOpen, setSelectedProduct, products, getWhatsAppDirectUrl, whatsappHandle } = useStore();
 
   const heroLily = products.find(p => p.id === 'prod-lily-flower') || products[0];
 
@@ -69,7 +69,7 @@ export const Hero = () => {
                 className="flex items-center gap-2 bg-emerald-50 text-emerald-800 px-5 py-3.5 rounded-2xl font-bold text-sm border border-emerald-200 hover:bg-emerald-100 transition-all"
               >
                 <span className="text-base">💬</span>
-                <span>WhatsApp: 01093536058</span>
+                <span>WhatsApp: {whatsappHandle}</span>
               </a>
             </div>
 

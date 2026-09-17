@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useStore } from '../context/StoreContext';
 import { categoriesList } from '../data/initialProducts';
 import { filesToDataUrls, totalDataUrlBytes, MAX_TOTAL_IMAGE_BYTES } from '../lib/imageUpload';
+import { DEFAULT_WHATSAPP_USERNAME, normalizeWhatsAppUsername } from '../lib/whatsapp';
 import { 
   X, 
   Lock, 
@@ -69,8 +70,7 @@ export const AdminPortal = () => {
 
   // Settings form state
   const [settingsForm, setSettingsForm] = useState({
-    whatsappNumber: settings.whatsappNumber || '01093536058',
-    whatsappDisplay: settings.whatsappDisplay || '01093536058',
+    whatsappUsername: settings.whatsappUsername || DEFAULT_WHATSAPP_USERNAME,
     instagramUrl: settings.instagramUrl || 'https://www.instagram.com/your.fav.crochet.gurly?igsh=Z3c2Nmd0Z2k5azNx',
     facebookUrl: settings.facebookUrl || 'https://www.facebook.com/share/1DYjDCmeen/?mibextid=wwXIfr',
     tiktokUrl: settings.tiktokUrl || 'https://www.tiktok.com/@your.fav.crochet.gurly?_r=1&_t=ZS-99NMdUnCZWP',
@@ -212,8 +212,11 @@ export const AdminPortal = () => {
   const handleSaveSettings = (e) => {
     e.preventDefault();
     const updated = {
-      whatsappNumber: settingsForm.whatsappNumber,
-      whatsappDisplay: settingsForm.whatsappDisplay || settingsForm.whatsappNumber,
+      whatsappUsername: normalizeWhatsAppUsername(settingsForm.whatsappUsername),
+      // Retire the old phone-number keys so they never resurface from D1.
+      whatsappNumber: null,
+      whatsappDisplay: null,
+      phone: null,
       instagramUrl: settingsForm.instagramUrl,
       facebookUrl: settingsForm.facebookUrl,
       tiktokUrl: settingsForm.tiktokUrl,
@@ -962,35 +965,29 @@ export const AdminPortal = () => {
             {activeTab === 'settings' && (
               <form onSubmit={handleSaveSettings} className="p-4 sm:p-6 space-y-4 max-w-2xl">
                 <div className="pb-2 border-b border-yellow-200">
-                  <h3 className="text-base font-black text-slate-900">Store Settings & WhatsApp Hotline</h3>
-                  <p className="text-xs text-slate-500">Configure your store number, social accounts, and banner.</p>
+                  <h3 className="text-base font-black text-slate-900">Store Settings & WhatsApp Username</h3>
+                  <p className="text-xs text-slate-500">Configure your WhatsApp username, social accounts, and banner.</p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-800 mb-1">
-                      WhatsApp Checkout Number (رقم الواتس للأوردرات)
-                    </label>
+                <div>
+                  <label className="block text-xs font-bold text-slate-800 mb-1">
+                    WhatsApp Username (يوزر الواتس للأوردرات)
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-black text-slate-400">@</span>
                     <input
                       type="text"
-                      value={settingsForm.whatsappNumber}
-                      onChange={(e) => setSettingsForm({ ...settingsForm, whatsappNumber: e.target.value })}
+                      value={settingsForm.whatsappUsername}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, whatsappUsername: e.target.value })}
+                      placeholder={DEFAULT_WHATSAPP_USERNAME}
                       className="w-full px-3 py-2 text-xs rounded-xl border border-yellow-200 bg-yellow-50/40 text-slate-800 font-bold"
                     />
-                    <p className="text-[10px] text-slate-400 mt-1">Default: 01093536058</p>
                   </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-800 mb-1">
-                      Display Phone Number
-                    </label>
-                    <input
-                      type="text"
-                      value={settingsForm.whatsappDisplay}
-                      onChange={(e) => setSettingsForm({ ...settingsForm, whatsappDisplay: e.target.value })}
-                      className="w-full px-3 py-2 text-xs rounded-xl border border-yellow-200 bg-yellow-50/40 text-slate-800 font-medium"
-                    />
-                  </div>
+                  <p className="text-[10px] text-slate-400 mt-1">
+                    Default: @{DEFAULT_WHATSAPP_USERNAME} — orders open
+                    {` https://wa.me/${normalizeWhatsAppUsername(settingsForm.whatsappUsername) || DEFAULT_WHATSAPP_USERNAME}`}.
+                    No phone number is shown anywhere on the site.
+                  </p>
                 </div>
 
                 <div>

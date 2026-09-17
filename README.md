@@ -78,19 +78,26 @@ falls back to the bundled catalog and localStorage, so the site never breaks.
 
 3. **Shopping Bag & WhatsApp Checkout**:
    - Real-time cart calculations.
-   - Instant WhatsApp checkout redirecting to `+201093536058` (`01093536058`) with greeting, customer address, product names, and totals.
+   - Instant WhatsApp checkout redirecting to the username **@nooryxbatoot** (`https://wa.me/nooryxbatoot`) with greeting, customer address, product names, and totals.
 
 4. **Custom Orders (تنفيذ خاص)**:
    - Form for custom crochet ideas, color preferences, and dimensions dispatching straight to WhatsApp.
+
+   > 🔒 **No phone number is published anywhere.** The store is reached through the
+   > WhatsApp **username** `nooryxbatoot` (`https://wa.me/nooryxbatoot`). The only number
+   > still collected is the *customer's own* number in the order / custom-request forms.
+   > The handle is editable from **Admin Portal → Store Settings** (saved as the
+   > `whatsappUsername` setting); the retired `whatsappNumber`, `whatsappDisplay` and
+   > `phone` keys are deleted from D1 on save / re-seed.
 
 5. **Admin Portal 🔒**:
    - Passcode protected (PIN configurable from Store Settings).
    - Add/Edit products with image upload straight from your device (multiple images per product, pick the main one), 1-click stock status toggle (In Stock / Sold Out), and delete items.
    - View recent customer orders and custom inquiries.
-   - Update WhatsApp hotline number and social accounts.
+   - Update the WhatsApp username (handle) and social accounts.
 
 6. **Official Social Media Accounts**:
    - **Instagram**: [@your.fav.crochet.gurly](https://www.instagram.com/your.fav.crochet.gurly?igsh=Z3c2Nmd0Z2k5azNx)
    - **TikTok**: [@your.fav.crochet.gurly](https://www.tiktok.com/your.fav.crochet.gurly?_r=1&_t=ZS-99NMdUnCZWP)
    - **Facebook**: [Batoot Crochet](https://www.facebook.com/share/1DYjDCmeen/?mibextid=wwXIfr)
-   - **WhatsApp**: [01093536058](https://wa.me/201093536058)
+   - **WhatsApp**: [@nooryxbatoot](https://wa.me/nooryxbatoot)

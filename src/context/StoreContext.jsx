@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { initialProducts, initialSettings } from '../data/initialProducts';
 import { api } from '../lib/api';
+import { buildWhatsAppLink, formatWhatsAppUsername } from '../lib/whatsapp';
 
 const StoreContext = createContext();
 
@@ -16,10 +17,12 @@ export const StoreProvider = ({ children }) => {
     return initialProducts;
   });
 
-  // Settings state
+  // Settings state (v4 = WhatsApp username replaces the old phone number)
   const [settings, setSettings] = useState(() => {
     try {
-      const saved = localStorage.getItem('batoot_settings_v3');
+      // Drop the legacy v3 blob so no old phone number lingers in the browser.
+      localStorage.removeItem('batoot_settings_v3');
+      const saved = localStorage.getItem('batoot_settings_v4');
       if (saved) return JSON.parse(saved);
     } catch (e) {
       console.error("Failed to load settings", e);
@@ -144,7 +147,7 @@ export const StoreProvider = ({ children }) => {
 
   useEffect(() => {
     try {
-      localStorage.setItem('batoot_settings_v3', JSON.stringify(settings));
+      localStorage.setItem('batoot_settings_v4', JSON.stringify(settings));
     } catch (e) {
       console.error("Failed to save settings", e);
     }
@@ -321,7 +324,17 @@ export const StoreProvider = ({ children }) => {
 
   // Settings update
   const updateSettings = (newSettings) => {
-    setSettings(prev => ({ ...prev, ...newSettings }));
+    // `null` means "drop this key" — it is deleted from D1 (and ignored here).
+    const removedKeys = Object.keys(newSettings).filter(k => newSettings[k] === null || newSettings[k] === undefined);
+    const kept = Object.fromEntries(
+      Object.entries(newSettings).filter(([, v]) => v !== null && v !== undefined)
+    );
+
+    setSettings(prev => {
+      const next = { ...prev, ...kept };
+      removedKeys.forEach(k => delete next[k]);
+      return next;
+    });
     syncToDb(() => api.updateSettings(newSettings), 'settings');
     showToast("Store settings saved! 💛");
   };
@@ -356,9 +369,6 @@ export const StoreProvider = ({ children }) => {
 
   // WhatsApp Order Link Generator
   const generateWhatsAppOrderUrl = (customerDetails, orderItems, total) => {
-    const cleanPhone = settings.whatsappNumber.replace(/[^0-9]/g, '');
-    const intlPhone = cleanPhone.startsWith('0') ? '2' + cleanPhone : cleanPhone;
-    
     let message = `🪿 *New Order from Batoot Website!* 💛\n`;
     message += `━━━━━━━━━━━━━━━━━━━━━━\n`;
     message += `👤 *Customer Name:* ${customerDetails.name}\n`;
@@ -383,15 +393,11 @@ export const StoreProvider = ({ children }) => {
     message += `━━━━━━━━━━━━━━━━━━━━━━\n`;
     message += `✨ Hello Batoot! I would like to confirm my handmade crochet order above. Please let me know the preparation time and payment confirmation! 🪿💛`;
 
-    const encoded = encodeURIComponent(message);
-    return `https://wa.me/${intlPhone}?text=${encoded}`;
+    return buildWhatsAppLink(settings, message);
   };
 
   // WhatsApp Custom Order Request Link Generator
   const generateWhatsAppCustomRequestUrl = (customData) => {
-    const cleanPhone = settings.whatsappNumber.replace(/[^0-9]/g, '');
-    const intlPhone = cleanPhone.startsWith('0') ? '2' + cleanPhone : cleanPhone;
-
     let message = `🎨 *Custom Crochet Request - Batoot 🪿*\n`;
     message += `━━━━━━━━━━━━━━━━━━━━━━\n`;
     message += `👤 *Name:* ${customData.name}\n`;
@@ -411,16 +417,19 @@ export const StoreProvider = ({ children }) => {
     message += `━━━━━━━━━━━━━━━━━━━━━━\n`;
     message += `💛 Hello Batoot! I'd love to request a custom handmade crochet piece with the details above. Could you please provide a quote and estimated timeframe? 🪿✨`;
 
-    const encoded = encodeURIComponent(message);
-    return `https://wa.me/${intlPhone}?text=${encoded}`;
+    return buildWhatsAppLink(settings, message);
   };
 
   // WhatsApp Direct Chat Link
   const getWhatsAppDirectUrl = (customMessage = 'Hello Batoot! 🪿 I have a question about your handmade crochet pieces 💛') => {
-    const cleanPhone = settings.whatsappNumber.replace(/[^0-9]/g, '');
-    const intlPhone = cleanPhone.startsWith('0') ? '2' + cleanPhone : cleanPhone;
-    return `https://wa.me/${intlPhone}?text=${encodeURIComponent(customMessage)}`;
+    return buildWhatsAppLink(settings, customMessage);
   };
+
+  // "@nooryxbatoot" — displayed wherever the hotline used to show a number.
+  const whatsappHandle = formatWhatsAppUsername(settings);
+
+  // Plain chat link (no prefilled text) for the static anchors.
+  const whatsappLink = buildWhatsAppLink(settings);
 
   return (
     <StoreContext.Provider
@@ -440,6 +449,8 @@ export const StoreProvider = ({ children }) => {
         toastMessage,
         cartTotal,
         cartCount,
+        whatsappHandle,
+        whatsappLink,
         isDbConnected,
         isDbLoading,
         // Setters
