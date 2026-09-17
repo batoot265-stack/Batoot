@@ -62,7 +62,7 @@ export const ProductGrid = () => {
               Our Cozy Collection 🪿💛
             </h2>
             <p className="text-sm text-slate-500 font-medium mt-1">
-              Every item is crafted with love. Enjoy <strong>Free Shipping</strong> on every single order!
+              Every item is crafted with love and prepared especially for you.
             </p>
           </div>
 

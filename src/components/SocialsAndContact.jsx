@@ -184,8 +184,7 @@ export const SocialsAndContact = () => {
               </form>
             </div>
 
-            <div className="pt-4 mt-4 border-t border-yellow-200/80 flex items-center justify-between text-[11px] text-yellow-900 font-bold">
-              <span>🚚 Free Shipping on all orders</span>
+            <div className="pt-4 mt-4 border-t border-yellow-200/80 flex items-center justify-end text-[11px] text-yellow-900 font-bold">
               <span>💛 Made with love in Egypt</span>
             </div>
           </div>

@@ -2,6 +2,38 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { initialProducts, initialSettings } from '../data/initialProducts';
 import { api } from '../lib/api';
 
+const DEFAULT_ADMIN_PIN = '109212';
+const LEGACY_ADMIN_PINS = new Set(['1234', 'batoot2026']);
+const DEFAULT_ANNOUNCEMENT = '✨ 100% HANDMADE WITH LOVE 🪿 • FAST DIRECT WHATSAPP CHECKOUT 💬';
+
+const normalizeSettings = (value = {}) => {
+  const next = { ...initialSettings, ...value };
+
+  // Migrate the old bundled defaults so an existing browser or D1 record
+  // cannot silently keep the old admin credentials.
+  if (!next.adminPin || LEGACY_ADMIN_PINS.has(String(next.adminPin))) {
+    next.adminPin = DEFAULT_ADMIN_PIN;
+  }
+
+  // The old announcement advertised a delivery offer that no longer exists.
+  if (typeof next.announcementText !== 'string' || /free\s*(shipping|delivery)/i.test(next.announcementText)) {
+    next.announcementText = DEFAULT_ANNOUNCEMENT;
+  }
+
+  return next;
+};
+
+const sanitizeSettingsPatch = (patch = {}) => {
+  const next = { ...patch };
+  if (next.adminPin && LEGACY_ADMIN_PINS.has(String(next.adminPin))) {
+    next.adminPin = DEFAULT_ADMIN_PIN;
+  }
+  if (typeof next.announcementText === 'string' && /free\s*(shipping|delivery)/i.test(next.announcementText)) {
+    next.announcementText = DEFAULT_ANNOUNCEMENT;
+  }
+  return next;
+};
+
 const StoreContext = createContext();
 
 export const StoreProvider = ({ children }) => {
@@ -20,11 +52,11 @@ export const StoreProvider = ({ children }) => {
   const [settings, setSettings] = useState(() => {
     try {
       const saved = localStorage.getItem('batoot_settings_v3');
-      if (saved) return JSON.parse(saved);
+      if (saved) return normalizeSettings(JSON.parse(saved));
     } catch (e) {
       console.error("Failed to load settings", e);
     }
-    return initialSettings;
+    return normalizeSettings(initialSettings);
   });
 
   // Cart state
@@ -100,7 +132,19 @@ export const StoreProvider = ({ children }) => {
           setProducts(dbProducts);
         }
         if (dbSettings && Object.keys(dbSettings).length > 0) {
-          setSettings(prev => ({ ...prev, ...dbSettings }));
+          const mergedSettings = normalizeSettings({ ...settings, ...dbSettings });
+          setSettings(mergedSettings);
+
+          // Keep the remote settings in sync after migrating old defaults.
+          const needsSettingsMigration =
+            LEGACY_ADMIN_PINS.has(String(dbSettings.adminPin || '')) ||
+            /free\s*(shipping|delivery)/i.test(String(dbSettings.announcementText || ''));
+          if (needsSettingsMigration) {
+            api.updateSettings({
+              adminPin: mergedSettings.adminPin,
+              announcementText: mergedSettings.announcementText
+            }).catch((e) => console.warn('Could not migrate store settings', e));
+          }
         }
         setIsDbConnected(true);
       } catch {
@@ -321,14 +365,15 @@ export const StoreProvider = ({ children }) => {
 
   // Settings update
   const updateSettings = (newSettings) => {
-    setSettings(prev => ({ ...prev, ...newSettings }));
-    syncToDb(() => api.updateSettings(newSettings), 'settings');
+    const safePatch = sanitizeSettingsPatch(newSettings);
+    setSettings(prev => normalizeSettings({ ...prev, ...safePatch }));
+    syncToDb(() => api.updateSettings(safePatch), 'settings');
     showToast("Store settings saved! 💛");
   };
 
   // Admin Auth
   const loginAdmin = (pin) => {
-    if (pin === settings.adminPin || pin === '1234' || pin === 'batoot2026') {
+    if (String(pin) === String(settings.adminPin)) {
       setIsAdminLoggedIn(true);
       try {
         sessionStorage.setItem('batoot_admin_auth', 'true');
@@ -374,7 +419,6 @@ export const StoreProvider = ({ children }) => {
     });
 
     message += `━━━━━━━━━━━━━━━━━━━━━━\n`;
-    message += `🚚 *Shipping:* FREE SHIPPING (0 EGP) ✨\n`;
     message += `💰 *Total Amount:* *${total} EGP*\n`;
     message += `━━━━━━━━━━━━━━━━━━━━━━\n`;
     message += `✨ Hello Batoot! I would like to confirm my handmade crochet order above. Please let me know the preparation time and payment confirmation! 🪿💛`;

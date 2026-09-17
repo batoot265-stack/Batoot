@@ -1,24 +1,23 @@
 import React, { useState } from 'react';
 import { useStore } from '../context/StoreContext';
-import { 
-  ShoppingBag, 
-  Search, 
-  Sparkles, 
-  Shield, 
-  Phone, 
-  Menu, 
-  X, 
+import {
+  ShoppingBag,
+  Search,
+  Sparkles,
+  Shield,
+  Phone,
+  Menu,
+  X,
   Heart,
-  Palette,
-  Truck
+  Palette
 } from 'lucide-react';
 
 export const Navbar = ({ onNavigate }) => {
-  const { 
-    cartCount, 
-    setIsCartOpen, 
-    setIsCustomModalOpen, 
-    setIsAdminModalOpen, 
+  const {
+    cartCount,
+    setIsCartOpen,
+    setIsCustomModalOpen,
+    setIsAdminModalOpen,
     isAdminLoggedIn,
     searchQuery,
     setSearchQuery,
@@ -42,45 +41,43 @@ export const Navbar = ({ onNavigate }) => {
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-yellow-200/80 shadow-sm transition-all">
-      {/* Top Announcement Banner - Free Shipping Always */}
-      <div className="bg-gradient-to-r from-yellow-300 via-yellow-400 to-amber-400 text-yellow-950 font-semibold text-xs md:text-sm py-2 px-4 shadow-inner">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2 mx-auto md:mx-0 overflow-hidden text-center whitespace-nowrap">
-            <span className="inline-flex items-center gap-1.5 bg-white/80 text-yellow-900 px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm animate-pulse">
-              <Truck className="w-3.5 h-3.5" /> FREE SHIPPING
-            </span>
-            <span className="hidden sm:inline">✨</span>
-            <span className="font-bold tracking-tight">FREE SHIPPING ON ALL ORDERS NATIONWIDE 🪿</span>
-            <span className="hidden md:inline text-yellow-900/80">• Stitched with 100% Love & Soft Milk Cotton</span>
-          </div>
+      {/* Store Announcement Banner */}
+      {settings.announcementText && (
+        <div className="bg-gradient-to-r from-yellow-300 via-yellow-400 to-amber-400 text-yellow-950 font-semibold text-xs md:text-sm py-2 px-4 shadow-inner">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2 mx-auto md:mx-0 overflow-hidden text-center whitespace-nowrap">
+              <span className="hidden sm:inline">✨</span>
+              <span className="font-bold tracking-tight truncate">{settings.announcementText}</span>
+            </div>
 
-          <div className="hidden lg:flex items-center gap-4 text-xs font-bold">
-            <a 
-              href={`https://wa.me/20${settings.whatsappNumber.replace(/^0+/, '')}`} 
-              target="_blank" 
-              rel="noreferrer"
-              className="flex items-center gap-1 text-yellow-950 hover:text-white transition-colors bg-black/10 hover:bg-black/20 px-2.5 py-1 rounded-full"
-            >
-              <Phone className="w-3 h-3" /> WhatsApp: {settings.whatsappDisplay}
-            </a>
+            <div className="hidden lg:flex items-center gap-4 text-xs font-bold shrink-0">
+              <a
+                href={`https://wa.me/20${settings.whatsappNumber.replace(/^0+/, '')}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1 text-yellow-950 hover:text-white transition-colors bg-black/10 hover:bg-black/20 px-2.5 py-1 rounded-full"
+              >
+                <Phone className="w-3 h-3" /> WhatsApp: {settings.whatsappDisplay}
+              </a>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Main Header Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          
+
           {/* Logo & Brand Name */}
           <div className="flex items-center gap-3">
-            <button 
-              onClick={() => handleNavClick('hero')} 
+            <button
+              onClick={() => handleNavClick('hero')}
               className="flex items-center gap-3 group text-left focus:outline-none"
             >
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-200 via-yellow-300 to-yellow-400 p-1 shadow-md group-hover:rotate-6 transition-all duration-300 flex items-center justify-center overflow-hidden border-2 border-yellow-300">
-                <img 
-                  src="/images/batoot-logo.png" 
-                  alt="Batoot 🪿 Logo" 
+                <img
+                  src="/images/batoot-logo.png"
+                  alt="Batoot 🪿 Logo"
                   className="w-full h-full object-cover rounded-xl"
                   onError={(e) => {
                     e.target.style.display = 'none';
@@ -133,7 +130,7 @@ export const Navbar = ({ onNavigate }) => {
 
           {/* Right Action Icons & Bag Button */}
           <div className="flex items-center gap-2 sm:gap-3">
-            
+
             {/* Search Toggle / Bar */}
             <div className="relative hidden sm:block">
               <input
@@ -145,7 +142,7 @@ export const Navbar = ({ onNavigate }) => {
               />
               <Search className="w-4 h-4 text-yellow-600 absolute left-3 top-2.5 pointer-events-none" />
               {searchQuery && (
-                <button 
+                <button
                   onClick={() => setSearchQuery('')}
                   className="absolute right-2.5 top-2 text-slate-400 hover:text-slate-600 text-xs"
                 >

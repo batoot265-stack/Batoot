@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useStore } from '../context/StoreContext';
+import { imageFileToDataUrl, isDataImage } from '../lib/image';
 import { categoriesList } from '../data/initialProducts';
 import { 
   X, 
@@ -16,11 +17,29 @@ import {
   LogOut, 
   Phone, 
   Image as ImageIcon,
+  ImageOff,
+  Upload,
   Layers,
   RotateCcw,
   Sparkles,
   ExternalLink
 } from 'lucide-react';
+
+const createEmptyProductForm = () => ({
+  name: '',
+  category: 'Amigurumi & Plushies',
+  price: '',
+  originalPrice: '',
+  image: '',
+  badge: 'New ✨',
+  inStock: true,
+  shortDescription: '',
+  description: '',
+  yarnType: '100% Soft Milk Cotton Yarn',
+  dimensions: 'Approx. 20 cm',
+  careGuide: 'Gentle hand wash in cool water.',
+  colorsText: 'Yellow & White, Custom Palette'
+});
 
 export const AdminPortal = () => {
   const { 
@@ -48,21 +67,9 @@ export const AdminPortal = () => {
   const [editingProduct, setEditingProduct] = useState(null);
 
   // New Product Form State
-  const [productForm, setProductForm] = useState({
-    name: '',
-    category: 'Amigurumi & Plushies',
-    price: '',
-    originalPrice: '',
-    image: '/images/products/batoot-goose.jpg',
-    badge: 'New ✨',
-    inStock: true,
-    shortDescription: '',
-    description: '',
-    yarnType: '100% Soft Milk Cotton Yarn',
-    dimensions: 'Approx. 20 cm',
-    careGuide: 'Gentle hand wash in cool water.',
-    colorsText: 'Yellow & White, Custom Palette'
-  });
+  const [productForm, setProductForm] = useState(createEmptyProductForm);
+  const [isImageProcessing, setIsImageProcessing] = useState(false);
+  const imageInputRef = useRef(null);
 
   // Settings form state
   const [settingsForm, setSettingsForm] = useState({
@@ -71,7 +78,7 @@ export const AdminPortal = () => {
     instagramUrl: settings.instagramUrl || 'https://www.instagram.com/your.fav.crochet.gurly?igsh=Z3c2Nmd0Z2k5azNx',
     facebookUrl: settings.facebookUrl || 'https://www.facebook.com/share/1DYjDCmeen/?mibextid=wwXIfr',
     tiktokUrl: settings.tiktokUrl || 'https://www.tiktok.com/@your.fav.crochet.gurly?_r=1&_t=ZS-99NMdUnCZWP',
-    announcementText: settings.announcementText || '🚚 FREE SHIPPING ON ALL ORDERS ✨ • 100% HANDMADE WITH LOVE 🪿 • FAST DIRECT WHATSAPP CHECKOUT 💬',
+    announcementText: settings.announcementText || '✨ 100% HANDMADE WITH LOVE 🪿 • FAST DIRECT WHATSAPP CHECKOUT 💬',
     newPin: ''
   });
 
@@ -83,6 +90,28 @@ export const AdminPortal = () => {
       setPinInput('');
       setActiveTab('inventory');
     }
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+
+    setIsImageProcessing(true);
+    try {
+      const imageDataUrl = await imageFileToDataUrl(file);
+      setProductForm(prev => ({ ...prev, image: imageDataUrl }));
+      showToast('Product image uploaded and ready to save! 🖼️');
+    } catch (error) {
+      showToast(error.message || 'Could not upload this image.', 'error');
+    } finally {
+      setIsImageProcessing(false);
+    }
+  };
+
+  const removeProductImage = () => {
+    setProductForm(prev => ({ ...prev, image: '' }));
+    showToast('Product image removed. Save the product to apply the change.', 'info');
   };
 
   const handleCreateOrUpdateProduct = (e) => {
@@ -101,7 +130,7 @@ export const AdminPortal = () => {
       category: productForm.category,
       price: Number(productForm.price),
       originalPrice: productForm.originalPrice ? Number(productForm.originalPrice) : null,
-      image: productForm.image || '/images/products/batoot-goose.jpg',
+      image: productForm.image.trim() || null,
       badge: productForm.badge,
       inStock: productForm.inStock,
       shortDescription: productForm.shortDescription,
@@ -120,21 +149,7 @@ export const AdminPortal = () => {
     }
 
     // Reset Form
-    setProductForm({
-      name: '',
-      category: 'Amigurumi & Plushies',
-      price: '',
-      originalPrice: '',
-      image: '/images/products/batoot-goose.jpg',
-      badge: 'New ✨',
-      inStock: true,
-      shortDescription: '',
-      description: '',
-      yarnType: '100% Soft Milk Cotton Yarn',
-      dimensions: 'Approx. 20 cm',
-      careGuide: 'Gentle hand wash in cool water.',
-      colorsText: 'Yellow & White, Custom Palette'
-    });
+    setProductForm(createEmptyProductForm());
 
     setActiveTab('inventory');
   };
@@ -146,7 +161,7 @@ export const AdminPortal = () => {
       category: prod.category,
       price: prod.price,
       originalPrice: prod.originalPrice || '',
-      image: prod.image,
+      image: prod.image || '',
       badge: prod.badge || '',
       inStock: prod.inStock !== false,
       shortDescription: prod.shortDescription || '',
@@ -261,7 +276,7 @@ export const AdminPortal = () => {
               <div>
                 <input
                   type="password"
-                  placeholder="Enter PIN (Default: 1234)"
+                  placeholder="Enter admin PIN"
                   value={pinInput}
                   onChange={(e) => setPinInput(e.target.value)}
                   className="w-full px-4 py-3 text-center text-lg tracking-widest font-black rounded-2xl border-2 border-yellow-300 bg-yellow-50/50 focus:outline-none focus:ring-4 focus:ring-yellow-300 text-slate-900"
@@ -278,7 +293,7 @@ export const AdminPortal = () => {
             </form>
 
             <p className="text-[11px] text-slate-400">
-              💡 Hint for store owner: Default passcode is <strong>1234</strong>
+              Enter the private passcode provided to the store owner.
             </p>
           </div>
         ) : (
@@ -303,21 +318,7 @@ export const AdminPortal = () => {
                 onClick={() => {
                   setActiveTab('add');
                   if (!editingProduct) {
-                    setProductForm({
-                      name: '',
-                      category: 'Amigurumi & Plushies',
-                      price: '',
-                      originalPrice: '',
-                      image: '/images/products/batoot-goose.jpg',
-                      badge: 'New ✨',
-                      inStock: true,
-                      shortDescription: '',
-                      description: '',
-                      yarnType: '100% Soft Milk Cotton Yarn',
-                      dimensions: 'Approx. 20 cm',
-                      careGuide: 'Gentle hand wash in cool water.',
-                      colorsText: 'Yellow & White, Custom Palette'
-                    });
+                    setProductForm(createEmptyProductForm());
                   }
                 }}
                 className={`py-3 px-3.5 text-xs font-black whitespace-nowrap border-b-2 transition-all flex items-center gap-1.5 ${
@@ -411,12 +412,16 @@ export const AdminPortal = () => {
                     >
                       {/* Product Media & Info */}
                       <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-14 h-14 rounded-xl overflow-hidden bg-yellow-50 border border-yellow-200 shrink-0">
-                          <img
-                            src={item.image}
-                            alt={item.name}
-                            className="w-full h-full object-cover"
-                          />
+                        <div className="w-14 h-14 rounded-xl overflow-hidden bg-yellow-50 border border-yellow-200 shrink-0 flex items-center justify-center">
+                          {item.image ? (
+                            <img
+                              src={item.image}
+                              alt={item.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <ImageOff className="w-5 h-5 text-yellow-700" aria-label="No product image" />
+                          )}
                         </div>
 
                         <div className="min-w-0">
@@ -583,17 +588,82 @@ export const AdminPortal = () => {
                 </div>
 
                 {/* Image Selection */}
-                <div>
-                  <label className="block text-xs font-bold text-slate-800 mb-1">
-                    Product Image URL / Preset (صورة المنتج)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Image URL or choose preset below"
-                    value={productForm.image}
-                    onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-yellow-200 bg-yellow-50/40 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-slate-800 mb-2 font-mono"
-                  />
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-800">
+                        Product Image (صورة المنتج)
+                      </label>
+                      <p className="text-[10px] text-slate-500 mt-0.5">
+                        Upload from your device, paste an image URL, or choose a preset.
+                      </p>
+                    </div>
+                    {productForm.image && (
+                      <button
+                        type="button"
+                        onClick={removeProductImage}
+                        className="shrink-0 px-2.5 py-1.5 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 text-[11px] font-bold flex items-center gap-1"
+                      >
+                        <ImageOff className="w-3.5 h-3.5" />
+                        Remove image
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] gap-2 items-start">
+                    <input
+                      type="text"
+                      placeholder="https://... image URL"
+                      value={isDataImage(productForm.image) ? '' : productForm.image}
+                      onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-yellow-200 bg-yellow-50/40 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-slate-800 font-mono"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => imageInputRef.current?.click()}
+                      disabled={isImageProcessing}
+                      className="px-3 py-2 rounded-xl bg-yellow-100 hover:bg-yellow-200 disabled:opacity-60 text-yellow-950 border border-yellow-300 text-xs font-black flex items-center justify-center gap-1.5 whitespace-nowrap"
+                    >
+                      <Upload className="w-3.5 h-3.5" />
+                      {isImageProcessing ? 'Processing...' : 'Upload image'}
+                    </button>
+                    <input
+                      ref={imageInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-3 p-2.5 rounded-xl bg-yellow-50/60 border border-yellow-200">
+                    <div className="w-24 h-24 rounded-lg overflow-hidden bg-white border border-yellow-200 shrink-0 flex items-center justify-center">
+                      {productForm.image ? (
+                        <img
+                          src={productForm.image}
+                          alt="Product preview"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="text-center text-slate-400 px-2">
+                          <ImageIcon className="w-6 h-6 mx-auto mb-1" />
+                          <span className="text-[10px] font-bold">No image</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-[11px] text-slate-600 leading-relaxed">
+                      <p className="font-black text-slate-800 mb-1">
+                        {productForm.image
+                          ? (isDataImage(productForm.image) ? 'Uploaded image ready' : 'Image selected')
+                          : 'No image selected'}
+                      </p>
+                      <p>
+                        {productForm.image
+                          ? 'Save the product to publish this image. You can replace it at any time.'
+                          : 'You can save without an image and add one later from Edit Product.'}
+                      </p>
+                    </div>
+                  </div>
 
                   {/* Preset Image Selector Buttons */}
                   <div className="flex flex-wrap gap-1.5">
@@ -751,7 +821,7 @@ export const AdminPortal = () => {
 
                           <div className="flex items-center gap-2">
                             <span className="text-xs font-black text-slate-900 bg-yellow-50 px-2.5 py-1 rounded-lg border border-yellow-200">
-                              Total: {order.totalAmount} EGP (Free Shipping)
+                              Total: {order.totalAmount ?? order.total} EGP
                             </span>
                             <a
                               href={`https://wa.me/20${order.phone ? order.phone.replace(/^0+/, '') : ''}`}

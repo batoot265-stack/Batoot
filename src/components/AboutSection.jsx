@@ -92,9 +92,9 @@ export const AboutSection = () => {
               <div className="w-10 h-10 rounded-xl bg-yellow-100 group-hover:bg-yellow-400 text-yellow-900 flex items-center justify-center font-bold mb-3 transition-colors">
                 <Award className="w-5 h-5 text-yellow-700" />
               </div>
-              <h4 className="text-base font-extrabold text-slate-900">Always Free Shipping</h4>
+              <h4 className="text-base font-extrabold text-slate-900">Thoughtful Presentation</h4>
               <p className="mt-1.5 text-xs text-slate-600 leading-relaxed">
-                Enjoy hassle-free nationwide free delivery on every single order without minimum spend thresholds.
+                Every piece is carefully checked and prepared so it reaches you looking as special as it felt to make.
               </p>
             </div>
 

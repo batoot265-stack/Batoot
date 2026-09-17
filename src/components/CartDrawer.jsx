@@ -6,7 +6,6 @@ import {
   Trash2, 
   Plus, 
   Minus, 
-  Truck, 
   ArrowRight, 
   CheckCircle2, 
   Sparkles,
@@ -97,8 +96,7 @@ export const CartDrawer = () => {
       governorate: customerDetails.governorate,
       notes: customerDetails.notes,
       items: cart,
-      totalAmount: cartTotal,
-      shipping: 0
+      totalAmount: cartTotal
     });
 
     // 2. Generate WhatsApp link
@@ -139,7 +137,7 @@ export const CartDrawer = () => {
                   {checkoutStep === 'success' && 'Order Received! 🎉'}
                 </h2>
                 <p className="text-[11px] font-bold text-yellow-800">
-                  {cartCount} item{cartCount !== 1 ? 's' : ''} in bag • Free Nationwide Shipping
+                  {cartCount} item{cartCount !== 1 ? 's' : ''} in bag • Direct WhatsApp checkout
                 </p>
               </div>
             </div>
@@ -150,12 +148,6 @@ export const CartDrawer = () => {
             >
               <X className="w-5 h-5" />
             </button>
-          </div>
-
-          {/* Free Shipping Alert Bar */}
-          <div className="bg-yellow-300/60 px-4 py-2 text-xs font-black text-yellow-950 flex items-center justify-center gap-2 border-b border-yellow-200">
-            <Truck className="w-4 h-4 text-yellow-900 animate-bounce-slow" />
-            <span>🎉 FREE SHIPPING UNLOCKED ON YOUR ORDER!</span>
           </div>
 
           {/* Main Body */}
@@ -188,7 +180,7 @@ export const CartDrawer = () => {
                         {/* Thumbnail */}
                         <div className="w-16 h-16 rounded-xl bg-yellow-100 overflow-hidden shrink-0 border border-yellow-200">
                           <img
-                            src={item.image}
+                            src={item.image || '/images/batoot-hero.jpg'}
                             alt={item.name}
                             className="w-full h-full object-cover"
                           />
@@ -370,7 +362,7 @@ export const CartDrawer = () => {
                   Your order details have been forwarded to our WhatsApp hotline (<strong>{settings.whatsappDisplay}</strong>). We'll confirm the order with you immediately and begin crafting your cozy crochet piece!
                 </p>
                 <div className="p-4 bg-yellow-50 rounded-2xl border border-yellow-200 text-xs text-yellow-900 font-bold">
-                  <span>Free shipping included • Stitched with love 💛</span>
+                  <span>Order details sent • Stitched with love 💛</span>
                 </div>
                 <button
                   onClick={handleClose}
@@ -392,12 +384,6 @@ export const CartDrawer = () => {
                 <div className="flex justify-between text-slate-600">
                   <span>Subtotal:</span>
                   <span className="font-bold text-slate-900">{cartTotal} EGP</span>
-                </div>
-                <div className="flex justify-between text-emerald-700 font-bold">
-                  <span className="flex items-center gap-1">
-                    <Truck className="w-3.5 h-3.5" /> Free Shipping:
-                  </span>
-                  <span>0 EGP (FREE)</span>
                 </div>
                 <div className="pt-2 border-t border-yellow-200 flex justify-between items-baseline">
                   <span className="text-sm font-black text-slate-900">Total Price:</span>

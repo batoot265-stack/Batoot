@@ -1,6 +1,6 @@
 import React from 'react';
 import { useStore } from '../context/StoreContext';
-import { Sparkles, ArrowRight, Heart, ShieldCheck, Palette, Truck, Star } from 'lucide-react';
+import { Sparkles, ArrowRight, Heart, ShieldCheck, Palette, Star } from 'lucide-react';
 
 export const Hero = () => {
   const { setIsCustomModalOpen, setSelectedProduct, products, getWhatsAppDirectUrl } = useStore();
@@ -30,7 +30,7 @@ export const Hero = () => {
               <span className="text-lg">🪿</span>
               <span>100% Artisan Handmade Crochet</span>
               <span className="w-1.5 h-1.5 rounded-full bg-yellow-600"></span>
-              <span className="text-yellow-800 font-extrabold">Free Shipping Always</span>
+              <span className="text-yellow-800 font-extrabold">Made to bring joy</span>
             </div>
 
             {/* Main Headline */}
@@ -76,17 +76,7 @@ export const Hero = () => {
             </div>
 
             {/* Trust Badges */}
-            <div className="pt-6 border-t border-yellow-200/60 grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
-              <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/70 border border-yellow-100 shadow-xs">
-                <div className="w-8 h-8 rounded-lg bg-yellow-100 text-yellow-800 flex items-center justify-center font-bold shrink-0">
-                  <Truck className="w-4 h-4" />
-                </div>
-                <div>
-                  <p className="text-xs font-black text-slate-900">Free Shipping</p>
-                  <p className="text-[10px] text-slate-500">All orders nationwide</p>
-                </div>
-              </div>
-
+            <div className="pt-6 border-t border-yellow-200/60 grid grid-cols-2 sm:grid-cols-3 gap-3 text-left">
               <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/70 border border-yellow-100 shadow-xs">
                 <div className="w-8 h-8 rounded-lg bg-yellow-100 text-yellow-800 flex items-center justify-center font-bold shrink-0">
                   🧶
@@ -143,15 +133,11 @@ export const Hero = () => {
                     <span className="text-xs font-extrabold text-yellow-950">Batoot Signature</span>
                   </div>
 
-                  <div className="absolute top-3 right-3 bg-yellow-400 text-yellow-950 text-xs font-black px-3 py-1.5 rounded-full shadow-md">
-                    FREE DELIVERY 🚚
-                  </div>
-
                   {/* Bottom Image Overlay Card */}
                   <div className="absolute bottom-3 inset-x-3 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-yellow-200 shadow-lg flex items-center justify-between">
                     <div>
                       <h4 className="text-xs font-extrabold text-slate-900">A Lily Flower 🌺</h4>
-                      <p className="text-[11px] font-semibold text-yellow-700">490 EGP • Free Shipping</p>
+                      <p className="text-[11px] font-semibold text-yellow-700">490 EGP • Handmade with love</p>
                     </div>
                     {heroLily && (
                       <button
