@@ -10,7 +10,7 @@ const TikTokIcon = ({ className = "w-5 h-5" }) => (
 );
 
 export const SocialsAndContact = () => {
-  const { getWhatsAppDirectUrl, whatsappHandle, whatsappLink } = useStore();
+  const { settings, getWhatsAppDirectUrl, whatsappHandle, whatsappLink } = useStore();
   const [quickMsg, setQuickMsg] = useState('');
 
   const handleSendQuickMsg = (e) => {
@@ -75,7 +75,7 @@ export const SocialsAndContact = () => {
 
             {/* 2. Instagram Card */}
             <a
-              href={settings.instagramUrl}
+              href={settings?.instagramUrl || '#'}
               target="_blank"
               rel="noreferrer"
               className="p-5 rounded-3xl bg-gradient-to-br from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white shadow-lg hover:shadow-pink-200 hover:-translate-y-1 transition-all flex flex-col justify-between group"
@@ -100,7 +100,7 @@ export const SocialsAndContact = () => {
 
             {/* 3. TikTok Card */}
             <a
-              href={settings.tiktokUrl}
+              href={settings?.tiktokUrl || '#'}
               target="_blank"
               rel="noreferrer"
               className="p-5 rounded-3xl bg-gradient-to-br from-slate-900 via-neutral-900 to-black text-white shadow-lg hover:shadow-slate-300 hover:-translate-y-1 transition-all flex flex-col justify-between group border border-slate-800"
@@ -128,7 +128,7 @@ export const SocialsAndContact = () => {
 
             {/* 4. Facebook Card */}
             <a
-              href={settings.facebookUrl}
+              href={settings?.facebookUrl || '#'}
               target="_blank"
               rel="noreferrer"
               className="p-5 rounded-3xl bg-gradient-to-br from-[#1877F2] to-[#0D65D9] text-white shadow-lg hover:shadow-blue-200 hover:-translate-y-1 transition-all flex flex-col justify-between group"
